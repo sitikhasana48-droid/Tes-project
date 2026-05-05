@@ -1,1 +1,456 @@
 
+<!DOCTYPE html>
+<html lang="id">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>RTP LIVE WOWGAMING </title>
+
+<style>
+body{background:#0b0b0b;font-family:sans-serif;margin:0;color:#fff}
+.grid{display:grid;grid-template-columns:repeat(auto-fill,minmax(160px,1fr));gap:12px;padding:12px;}
+.card{width:100%;height:85%;object-position:80% center;aspect-ratio:3/4; background:#111;border-radius:14px;overflow:hidden;position:relative;cursor:pointer;}
+.label{position:absolute;top:5px;left:5px;background:red;padding:3px 6px;font-size:10px;font-weight:bold;border-radius:4px;}
+.label.top{background:orange;}
+.label.new{background:red;}
+.card img{width:100%;height:90%;object-fit:contain;background:#000;}
+.rtp{position:absolute;bottom:0;left:0;width:100%;height:22px;background:rgba(255,255,255,0.3);border-radius:4px;overflow:hidden;backdrop-filter:blur(4px);}
+.rtp-fill{position:relative;height:100%;width:var(--percent,50%);overflow:hidden;border-radius:4px;background:none;}
+.rtp-fill::before{content:"";position:absolute;top:0;left:0;width:300%;height:100%;background:linear-gradient(90deg,#22c55e 0%,#4ade80 20%,#22c55e 40%,#4ade80 60%,#22c55e 80%,#4ade80 100%);background-size:300% 100%;animation:moveForward 6s linear infinite;}
+.rtp-fill.high::before{background:repeating-linear-gradient(45deg,rgba(255,255,255,0.2),rgba(255,255,255,0.2) 10px,transparent 10px,transparent 20px),linear-gradient(90deg,#22c55e,#4ade80,#22c55e);}
+.rtp-fill.mid::before{background:repeating-linear-gradient(45deg,rgba(255,255,255,0.2),rgba(255,255,255,0.2) 10px,transparent 10px,transparent 20px),linear-gradient(90deg,#facc15,#fde047,#facc15);}
+.rtp-fill.low::before{background:repeating-linear-gradient(45deg,rgba(255,255,255,0.2),rgba(255,255,255,0.2) 10px,transparent 10px,transparent 20px),linear-gradient(90deg,#ef4444,#f87171,#ef4444);}
+@keyframes moveForward{0%{transform:translateX(0);}100%{transform:translateX(-66%);}}
+.rtp-text{position:absolute;left:50%;top:50%;transform:translate(-50%,-50%);font-size:12px;font-weight:bold;color:#000;z-index:2;pointer-events:none;text-shadow:0 0 3px #fff;}
+.card .overlay-btn{position:absolute;top:50%;left:50%;transform:translate(-50%,-50%);width:80%;height:40px;background:rgba(223,183,5,0.9);color:#000;font-weight:bold;font-size:12px;text-align:center;line-height:40px;opacity:0;transition:opacity 0.3s ease;pointer-events:none;border-radius:6px;}
+.card:hover .overlay-btn{opacity:1;pointer-events:auto;}
+.popup{position:fixed;top:0;left:0;width:100%;height:100%;background:rgba(0,0,0,0.9);display:none;justify-content:center;align-items:center;}
+.popup-content{width:92%;max-width:360px;background:#1c1c1c;border-radius:16px;overflow:hidden;position:relative;}
+.popup-header{background:#dfb705;text-align:center;padding:14px;font-weight:bold;}
+.popup-body{padding:14px;font-size:12px;}
+.close{position:absolute;top:8px;right:8px;background:#fff;color:#000;width:25px;height:25px;border-radius:50%;text-align:center;line-height:25px;cursor:pointer;}
+.info-box{background:#111;padding:10px;border-radius:8px;margin-bottom:10px;}
+.info-row{display:flex;justify-content:space-between;padding:6px 0;border-bottom:1px solid #222;}
+.info-row:last-child{border-bottom:none;}
+.info-label{color:#aaa;}
+.info-value{font-weight:bold;}
+.pola-title{text-align:center;background:#dfb705;padding:6px;font-size:11px;font-weight:bold;margin:10px 0;}
+.step{background:#0f0f0f;padding:12px;border-radius:10px;margin-bottom:10px;border-left:4px solid #dfb705;}
+.step b{display:block;margin-bottom:3px;}
+.final-red{color:#ff2d2d;font-weight:bold;margin-top:10px;}
+.green{color:#22c55e;text-align:center;margin-top:10px;font-weight:bold;}
+.warning-red{background:#ef4444;color:#fff;padding:12px;border-radius:8px;text-align:center;font-size:12px;font-weight:bold;margin-bottom:10px;}
+.btn{display:block;text-align:center;padding:14px;background:#dfb705;color:#fff;text-decoration:none;font-weight:bold;}
+</style>
+</head>
+
+<body>
+
+<div class="grid" id="grid"></div>
+
+<div class="popup" id="popup">
+  <div class="popup-content">
+    <div class="close" onclick="closePopup()">×</div>
+    <div class="popup-header">TRIK & POLA</div>
+    <div class="popup-body"></div>
+    <a href="https://linkloginanda.com" class="btn">MAIN SEKARANG</a>
+  </div>
+</div>
+
+<script>
+
+
+let games = [
+  { name: "Spin Domino QiuQiu", img: "https://img.viva88athenae.com/wow/images/SPIN_DOMINO_QIUQIU.png" },
+  { name: "Robin Hood", img: "https://img.viva88athenae.com/wow/images/ROBIN_HOOD.png" },
+  { name: "Legend of Wusheng 40K", img: "https://img.viva88athenae.com/wow/images/LEGEND_OF_WUSHENG_40K.png" },
+  { name: "Heibai Wuchang", img: "https://img.viva88athenae.com/wow/images/HEIBAI_WUCHANG.png" },
+  { name: "Barong Sacred Battle", img: "https://img.viva88athenae.com/wow/images/BARONG_SACRED_BATTLE.png" },
+  { name: "The Four Divine Beasts", img: "https://img.viva88athenae.com/wow/images/THE_FOUR_DIVINE_BEASTS.png" },
+  { name: "Nine Tailed Fox", img: "https://img.viva88athenae.com/wow/images/NINE_TAILED_FOX.png" },
+  { name: "Trial of the Fire Dragon", img: "https://img.viva88athenae.com/wow/images/TRIAL_OF_THE_FIRE_DRAGON.png" },
+  { name: "Puteri Gunung Ledang", img: "https://img.viva88athenae.com/wow/images/PUTERI_GUNUNG_LEDANG.png" },
+  { name: "Titan Monster", img: "https://img.viva88athenae.com/wow/images/TITAN_MONSTER.png" },
+  { name: "Flowerish Fairy", img: "https://img.viva88athenae.com/wow/images/FLOWERISH_FAIRY.png" },
+  { name: "Call UFO", img: "https://img.viva88athenae.com/wow/images/CALL_UFO.png" },
+  { name: "Alice in Wonderland", img: "https://img.viva88athenae.com/wow/images/ALICE_IN_WONDERLAND.png" },
+  { name: "Jungle Treasure", img: "https://img.viva88athenae.com/wow/images/JUNGLE_TREASURE.png" },
+  { name: "Hang Tuah", img: "https://img.viva88athenae.com/wow/images/HANG_TUAH.png" },
+  { name: "Magician", img: "https://img.viva88athenae.com/wow/images/MAGICIAN.png" },
+  { name: "Baahubali", img: "https://img.viva88athenae.com/wow/images/BAAHUBALI.png" },
+  { name: "Four Gentlemanly Flowers", img: "https://img.viva88athenae.com/wow/images/FOUR_GENTLEMANLY_FLOWERS.png" },
+  { name: "Jack and the Beanstalk", img: "https://img.viva88athenae.com/wow/images/JACK_AND_THE_BEANSTALK.png" },
+  { name: "Billionaire Party", img: "https://img.viva88athenae.com/wow/images/BILLIONAIRE_PARTY.png" },
+  { name: "Night Bar", img: "https://img.viva88athenae.com/wow/images/NIGHT_BAR.png" },
+  { name: "Fate and Luck", img: "https://img.viva88athenae.com/wow/images/FATE_AND_LUCK.png" },
+  { name: "Thor's Hammer", img: "https://img.viva88athenae.com/wow/images/THORS_HAMMER.png" },
+  { name: "Secret Scroll of Ninja", img: "https://img.viva88athenae.com/wow/images/SECRET_SCROLL_OF_NINJA.png" },
+  { name: "Wizard of Oz", img: "https://img.viva88athenae.com/wow/images/WIZARD_OF_OZ.png" },
+  { name: "Fireworks", img: "https://img.viva88athenae.com/wow/images/FIREWORKS.png" },
+  { name: "Legend of Easter Island", img: "https://img.viva88athenae.com/wow/images/LEGEND_OF_EASTER_ISLAND.png" }
+];
+
+function getRTP(i){
+  let timeBlock = getTimeBlock();
+
+  
+  let seed = (i * 53 + timeBlock * 29 + (i % 6) * 17) % 100;
+
+  if(seed < 25){
+    // 🔴 
+    return 40 + (seed % 10);    
+  } 
+  else if(seed < 30){
+    // 🟡 
+    return 55 + (seed % 20);    
+  } 
+  else{
+    // 🟢 
+    return 70 + (seed % 15);   
+  }
+}
+
+function getColor(r){
+  if(r>=40) return "#22c55e";
+  if(r>=60) return "#facc15";
+  return "#ef4444";
+}
+function getTimeBlock(){
+  let now = new Date(
+    new Date().toLocaleString("en-US", { timeZone: "Asia/Jakarta" })
+  );
+
+  let minutes = now.getMinutes();
+  let block = Math.floor(minutes / 15);
+  return now.getHours() * 4 + block;
+}
+
+let finalList = [
+  "Mulai dengan taruhan kecil untuk membaca pola permainan",
+  "Perhatikan irama simbol sebelum menaikkan taruhan",
+  "Berhenti sejenak jika hasil beruntun tidak menguntungkan",
+  "Tingkatkan taruhan perlahan saat kemenangan mulai muncul",
+  "Ganti permainan jika pola sulit diprediksi",
+  "Kelola modal dengan bijak, jangan terburu-buru",
+  "Naikkan taruhan secara bertahap saat kondisi stabil",
+  "Ambil keuntungan secukupnya, jangan serakah",
+  "Hentikan permainan saat target tercapai",
+  "Main dengan sabar dan hindari keputusan terburu-buru",
+  "Turunkan tempo jika hasil mulai fluktuatif",
+  "Sesuaikan taruhan sedikit demi sedikit mengikuti pola",
+  "Jangan memaksakan jika permainan tidak memberikan hasil",
+  "Utamakan konsistensi daripada mengejar kemenangan besar",
+  "Ambil jeda jika sudah beberapa kali kalah berturut-turut",
+  "Gunakan feeling tapi tetap kendalikan strategi",
+  "Hindari all-in, naikkan taruhan secara perlahan",
+  "Pindah game jika tidak ada tanda bonus atau peluang",
+  "Tetap tenang dan jangan biarkan emosi menguasai",
+  "Manfaatkan momentum saat kemenangan mulai rutin muncul"
+];
+
+function generatePola(gameIndex){
+
+
+let polaList = [
+
+["Langkah 1 | Spin Santai","20X Auto Spin",
+ "Langkah 2 | Turbo Aktif","30X Turbo Spin",
+ "Langkah 3 | Stabilkan Ritme","10X Manual",
+ "Langkah Terakhir","Perhatikan simbol dan pola spin"],
+
+["Langkah 1 | Pemanasan","15X Manual Spin",
+ "Langkah 2 | Turbo Mode","40X Turbo Spin",
+ "Langkah 3 | Kontrol","10X Manual",
+ "Langkah Terakhir","Jaga ritme sebelum naikkan taruhan"],
+
+["Langkah 1 | Tes Mesin","25X Auto Spin",
+ "Langkah 2 | Tekan Turbo","30X Turbo Spin",
+ "Langkah 3 | Tarik Pola","10X Manual",
+ "Langkah Terakhir","Amati scatter dan kombinasi simbol"],
+
+["Langkah 1 | Putaran Awal","20X Manual",
+ "Langkah 2 | Naikkan Ritme","50X Turbo Spin",
+ "Langkah 3 | Stabilkan","10X Manual",
+ "Langkah Terakhir","Perhatikan multiplier saat muncul"],
+
+["Langkah 1 | Spin Ringan","15X Auto Spin",
+ "Langkah 2 | Turbo Cepat","40X Turbo",
+ "Langkah 3 | Kontrol","10X Manual",
+ "Langkah Terakhir","Tetap fokus pada pola simbol"],
+
+["Langkah 1 | Baca Pola","30X Manual",
+ "Langkah 2 | Tekan Mesin","30X Turbo Spin",
+ "Langkah 3 | Stabilkan","10X Manual",
+ "Langkah Terakhir","Perhatikan ritme sebelum spin lebih cepat"],
+
+["Langkah 1 | Mulai Ringan","20X Auto Spin",
+ "Langkah 2 | Turbo Aktif","40X Turbo",
+ "Langkah 3 | Tarik Ritme","10X Manual",
+ "Langkah Terakhir","Amati simbol yang sering muncul"],
+
+["Langkah 1 | Tes Awal","25X Manual",
+ "Langkah 2 | Gas Turbo","30X Turbo Spin",
+ "Langkah 3 | Stabilkan","15X Manual",
+ "Langkah Terakhir","Tetap konsisten dengan ritme spin"],
+
+["Langkah 1 | Spin Awal","20X Auto Spin",
+ "Langkah 2 | Naikkan Tempo","50X Turbo Spin",
+ "Langkah 3 | Kontrol","10X Manual",
+ "Langkah Terakhir","Amati simbol spesial yang muncul"],
+
+["Langkah 1 | Awal Game","15X Manual",
+ "Langkah 2 | Turbo Mode","40X Turbo Spin",
+ "Langkah 3 | Stabilkan","10X Manual",
+ "Langkah Terakhir","Perhatikan multiplier saat mulai muncul"],
+
+["Langkah 1 | Putaran Cepat","30X Auto Spin",
+ "Langkah 2 | Tekan Turbo","30X Turbo",
+ "Langkah 3 | Kontrol","10X Manual",
+ "Langkah Terakhir","Amati pola simbol dan scatter"],
+
+["Langkah 1 | Spin Santai","20X Manual",
+ "Langkah 2 | Turbo Cepat","50X Turbo Spin",
+ "Langkah 3 | Stabilkan","10X Manual",
+ "Langkah Terakhir","Perhatikan peluang kombinasi simbol"],
+
+["Langkah 1 | Buka Mesin","25X Auto Spin",
+ "Langkah 2 | Gas Turbo","40X Turbo",
+ "Langkah 3 | Kontrol","10X Manual",
+ "Langkah Terakhir","Amati pola scatter dan simbol spesial"],
+
+["Langkah 1 | Start Mesin","20X Manual",
+ "Langkah 2 | Turbo Lanjut","30X Turbo Spin",
+ "Langkah 3 | Stabilkan","15X Manual",
+ "Langkah Terakhir","Tetap konsisten dengan ritme spin"],
+
+["Langkah 1 | Tes Mesin","30X Auto Spin",
+ "Langkah 2 | Mode Turbo","40X Turbo",
+ "Langkah 3 | Kontrol","10X Manual",
+ "Langkah Terakhir","Perhatikan simbol yang sering muncul"],
+
+["Langkah 1 | Putaran Ringan","15X Manual",
+ "Langkah 2 | Gas Cepat","50X Turbo Spin",
+ "Langkah 3 | Stabilkan","10X Manual",
+ "Langkah Terakhir","Amati ritme simbol dan scatter"],
+
+["Langkah 1 | Awal Santai","20X Auto Spin",
+ "Langkah 2 | Turbo Aktif","30X Turbo Spin",
+ "Langkah 3 | Tarik Pola","10X Manual",
+ "Langkah Terakhir","Perhatikan peluang simbol muncul"],
+
+["Langkah 1 | Tes Mesin","25X Manual",
+ "Langkah 2 | Naikkan Tempo","40X Turbo Spin",
+ "Langkah 3 | Stabilkan","10X Manual",
+ "Langkah Terakhir","Amati multiplier dan pola simbol"],
+
+["Langkah 1 | Start Slow","20X Auto Spin",
+ "Langkah 2 | Turbo Cepat","50X Turbo Spin",
+ "Langkah 3 | Kontrol","10X Manual",
+ "Langkah Terakhir","Perhatikan ritme spin sebelum naik"],
+
+["Langkah 1 | Awal Putaran","30X Manual",
+ "Langkah 2 | Mode Turbo","30X Turbo Spin",
+ "Langkah 3 | Stabilkan","10X Manual",
+ "Langkah Terakhir","Tetap fokus pada pola simbol yang muncul"]
+];
+
+let timeBlock = getTimeBlock();
+
+
+let index = (gameIndex + timeBlock) % polaList.length;
+
+let p = polaList[index];
+
+return [
+  [p[0],p[1]],
+  [p[2],p[3]],
+  [p[4],p[5]],
+  [p[6],p[7]]
+];
+
+}
+
+function getFinalStep(gameIndex){
+  let timeBlock = getTimeBlock();
+
+  let index = (gameIndex * 5 + timeBlock) % finalList.length;
+
+  return finalList[index];
+}
+// Render Game Grid
+function render(list=games){
+let html="";
+list.forEach((g,i)=>{
+  let r=getRTP(i);
+  let level=r>=75?"high":r>=60?"mid":"low";
+  html+=`<div class="card" onclick="openPopup(${i})">
+  <img src="${g.img}">
+  <div class="rtp"><div class="rtp-fill ${level}" style="width:${r}%"></div><div class="rtp-text">${r}%</div></div>
+  <div class="overlay-btn" onclick="openPopup(${i}); event.stopPropagation();">Lihat Pola & Trik</div></div>`;
+});
+document.getElementById("grid").innerHTML=html;
+}
+
+
+
+/* POPUP */
+let timerJam;
+
+function updateJam(){
+  let now = new Date();
+
+  let jam = now.toLocaleTimeString("id-ID",{
+    timeZone: "Asia/Jakarta",
+    hour: "2-digit",
+    minute: "2-digit",
+    second: "2-digit"
+  });
+
+  let el = document.getElementById("jam-live");
+  if(el){
+    el.innerText = "Update: " + jam + " WIB";
+  }
+}
+
+function getBet(i){
+  const timeBlock = getTimeBlock();
+
+  // Pilihan base acak, kelipatan 200
+  const baseOptions = [200, 400, 600];
+  let base = baseOptions[(i + timeBlock) % baseOptions.length];
+
+  // Pilih multiplier acak 1-5, kelipatan 200
+  let multiplier = Math.floor(Math.random() * 5) + 1; // 1 sampai 5
+  let maxBet = base * multiplier;
+
+  // Batas maksimal agar tidak terlalu besar
+  if(maxBet > 1400) maxBet = 1400;
+
+ 
+  let minBet = Math.floor(Math.random() * (maxBet / 200)) * 200;
+  if(minBet < base) minBet = base; 
+
+  return minBet + " - " + maxBet;
+}
+
+// Contoh pemakaian
+console.log(getBet(0));
+console.log(getBet(1));
+console.log(getBet(2));
+
+function openPopup(i){
+
+  clearInterval(timerJam);
+  timerJam = setInterval(updateJam, 1000);
+  updateJam();
+
+  let r = getRTP(i); 
+
+  
+  if(r < 60){
+    let html = `
+    <div class="warning-red">
+      ⚠️ GAME SEDANG TIDAK DISARANKAN<br><br>
+      RTP saat ini rendah (${r}%)<br>
+      Disarankan untuk mencari game lain terlebih dahulu
+    </div>
+
+    <div class="green">
+      Coba kembali beberapa saat lagi atau pilih game dengan RTP lebih tinggi
+    </div>
+    `;
+
+    document.querySelector(".popup-body").innerHTML = html;
+    document.getElementById("popup").style.display="flex";
+    return; // 
+  }
+
+  let betText = getBet(i);
+  let pola = generatePola(i);
+let finalStep = getFinalStep(i);
+
+let html = `
+<div id="jam-live" style="font-size:10px;color:#aaa;margin-bottom:8px;text-align:center;">
+Update: --
+</div>
+
+<div class="info-box">
+  <div class="info-row">
+    <div class="info-label">Provider</div>
+    <div class="info-value">WOWGAMING</div>
+  </div>
+
+  <div class="info-row">
+    <div class="info-label">Stake Bet</div>
+    <div class="info-value">${betText}</div>
+  </div>
+</div>
+
+<div class="pola-title">POLA REKOMENDASI</div>
+`;
+
+pola.forEach(p=>{
+  html+=`
+  <div class="step">
+    <b>${p[0]}</b>
+    ${p[1]}
+  </div>`;
+});
+
+html+=`
+<div class="final-red">
+Langkah Terakhir | ${finalStep}
+</div>
+
+<div style="font-size:11px;color:#ccc;margin-top:6px;">
+Apabila belum memperoleh freespin<br>
+silakan lakukan 10x spin turbo (manual)
+</div>
+
+<div class="green">
+Selamat bermain, semoga memperoleh kemenangan maksimal
+</div>
+
+<div class="warning">
+Utamakan penggunaan pola dan strategi masing-masing. Pastikan untuk mengaktifkan fitur ganda (jika tersedia) guna meningkatkan peluang munculnya SCATTER
+</div>
+`;
+
+document.querySelector(".popup-body").innerHTML = html;
+document.getElementById("popup").style.display="flex";
+}
+
+function closePopup(){
+  document.getElementById("popup").style.display="none";
+  clearInterval(timerJam); 
+}
+
+render();
+
+function autoUpdate(){
+  let lastBlock = getTimeBlock();
+
+  setInterval(()=>{
+    let currentBlock = getTimeBlock();
+
+    if(currentBlock !== lastBlock){
+      render(); 
+      lastBlock = currentBlock;
+    }
+  }, 10000);
+}
+
+autoUpdate();
+
+// Search Game via postMessage (dari halaman utama)
+window.addEventListener("message",function(e){
+if(e.data.type==="search"){
+  const keyword=e.data.keyword.toLowerCase();
+  const filtered=games.filter(g=>g.name.toLowerCase().includes(keyword));
+  render(filtered);
+}
+});
+</script>
+
+</body>
+</html>
