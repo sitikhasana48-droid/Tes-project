@@ -1,0 +1,1049 @@
+<!DOCTYPE html>
+<html lang="id">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>RTP LIVE COBA</title>
+<style>
+html, body{
+  margin:0;
+  padding:0;
+  overflow-x:hidden;
+}
+/* =========================
+   RESET
+========================= */
+*{
+  margin:0;
+  padding:0;
+  box-sizing:border-box;
+  font-family:sans-serif;
+}
+
+
+html,body{
+  width:100%;
+  overflow-x:hidden;
+  background:#050505;
+  color:#fff;
+}
+
+/* =========================
+   WRAPPER
+========================= */
+.wrapper{
+  max-width:1100px;
+  margin:20px auto; 
+}
+/* =========================
+   HEADER
+========================= */
+.header{
+  display:flex;
+  justify-content:space-between;
+  align-items:center;
+  gap:15px;
+  padding:14px 20px;
+  border-radius:14px;
+  background:linear-gradient(90deg,#ff7a00,#ffd700);
+  margin-bottom:5px;
+}
+
+.logo{
+  display:flex;
+  align-items:center;
+}
+
+.logo img{
+  height:42px;
+  display:block;
+}
+
+.logo-text{
+  font-size:22px;
+  font-weight:700;
+  color:#000;
+}
+
+.menu-btn{
+  display:flex;
+  gap:10px;
+}
+
+.menu-btn a{
+  text-decoration:none;
+  color:#fff;
+  padding:10px 22px;
+  border-radius:10px;
+  font-size:14px;
+  font-weight:700;
+  transition:.25s ease;
+}
+
+.login{
+  background:linear-gradient(135deg,#ff7a00,#ffb300);
+  color:#000 !important;
+}
+
+.daftar{
+  background:linear-gradient(135deg,#ff7a00,#ffb300);
+  color:#000 !important;
+}
+
+.menu-btn a:hover{
+  transform:translateY(-2px);
+}
+
+/* =========================
+   MARQUEE
+========================= */
+.marquee{
+  background:#111;
+  border:1px solid #1f1f1f;
+  border-radius:12px;
+  padding:10px;
+  overflow:hidden;
+  white-space:nowrap;
+  margin-bottom:5px;
+}
+
+.marquee span{
+  display:inline-block;
+  padding-left:100%;
+  animation:jalan 18s linear infinite;
+  color:#ffd700;
+  font-size:14px;
+}
+
+@keyframes jalan{
+  0%{transform:translateX(0);}
+  100%{transform:translateX(-100%);}
+}
+
+/* =========================
+   HERO
+========================= */
+.hero {
+  width: 100%;
+  height: auto;
+  overflow: hidden;
+  position: relative; /* <-- INI PENTING */
+}
+
+.hero img {
+  display: block;
+  width: 100%;
+  height: auto;
+}
+.hero::after{
+  content:"";
+  position:absolute;
+  inset:0;
+  background:linear-gradient(to top,rgba(0,0,0,.45),transparent);
+}
+
+/* =========================
+   MAIN LAYOUT
+========================= */
+.main-content{
+  display:flex;
+  gap:20px;
+  align-items:flex-start;
+}
+
+/* =========================
+   SIDEBAR
+========================= */
+.sidebar{
+  width:300px;
+  background:#0f0f0f;
+  border:1px solid #1e1e1e;
+  border-radius:16px;
+  padding:12px;
+  flex-shrink:0;
+  position:sticky;
+  top:10px;
+}
+
+.live-badge{
+  display:flex;
+  align-items:center;
+  gap:8px;
+  background:#ff1f1f;
+  padding:8px 12px;
+  border-radius:999px;
+  font-size:12px;
+  font-weight:700;
+  width:max-content;
+  margin-bottom:15px;
+}
+
+.live-dot{
+  width:8px;
+  height:8px;
+  border-radius:50%;
+  background:#fff;
+  animation:blink 1s infinite;
+}
+
+@keyframes blink{
+  50%{opacity:.3;}
+}
+
+#providerList{
+  display:flex;
+  flex-direction:column; /* 🔥 ubah ke column */
+  gap:10px;
+}
+
+.provider{
+  display:flex;
+  align-items:center;
+  gap:12px;
+  padding:12px;
+  border-radius:12px;
+  cursor:pointer;
+  background:#171717;
+  border:1px solid transparent;
+  transition:.25s ease;
+  min-width:90px;
+  flex-shrink:0;
+}
+
+.provider:hover{
+  border-color:#ff7a00;
+  background:#1d1d1d;
+}
+
+.provider.active{
+  background:linear-gradient(135deg,#ff7a00,#ffb300);
+}
+
+.provider img{
+  width:34px;
+  height:34px;
+  object-fit:contain;
+}
+
+.provider span{
+  font-size:12px;
+  font-weight:700;
+  color:#fff;
+  line-height:1.3;
+}
+
+/* =========================
+   CONTENT
+========================= */
+.content-area{
+  flex:1;
+  min-width:0;
+  display:flex;
+  flex-direction:column;
+  gap:14px;
+}
+
+/* =========================
+   TOP BAR
+========================= */
+.top-bar{
+  display:flex;
+  justify-content:space-between;
+  align-items:center;
+  gap:15px;
+  background:#0f0f0f;
+  border:1px solid #ff7a00;
+  border-radius:16px;
+  padding:18px;
+}
+
+.top-bar h2{
+  font-size:28px;
+  color:#ffd700;
+  margin-bottom:5px;
+}
+
+.time-row{
+  display:flex;
+  flex-wrap:wrap;
+  gap:8px;
+  font-size:14px;
+  color:#d2d2d2;
+}
+
+.timezone{
+  color:#ffd700;
+  font-weight:700;
+}
+
+.right{
+  width:280px;
+}
+
+.right input{
+  width:100%;
+  height:48px;
+  border:none;
+  outline:none;
+  border-radius:12px;
+  background:#050505;
+  border:1px solid #ff7a00;
+  color:#fff;
+  padding:0 15px;
+  font-size:14px;
+}
+
+/* =========================
+   STATS
+========================= */
+.stats-box{
+  background:#0f0f0f;
+  border:1px solid #ff7a00;
+  border-radius:16px;
+  padding:18px;
+}
+
+.online{
+  font-size:16px;
+  color:#ffd700;
+  margin-bottom:15px;
+  font-weight:700;
+}
+
+.top-games{
+  font-size:16px;
+  font-weight:700;
+}
+
+.top-games ul{
+  margin-top:10px;
+  padding-left:20px;
+}
+
+.top-games li{
+  margin:8px 0;
+  color:#fff;
+  font-size:14px;
+  line-height:1.5;
+}
+
+/* =========================
+   IFRAME
+========================= */
+#gameFrame{
+  width:100%;
+  min-height:1200px;
+  border:none;
+  border-radius:16px;
+  background:#111;
+  display:block;
+  overflow:hidden;
+}
+
+/* =========================
+   LIVE CHAT
+========================= */
+.livechat{
+  position:fixed;
+  right:20px;
+  bottom:20px;
+  width:62px;
+  height:62px;
+  border-radius:50%;
+  display:flex;
+  align-items:center;
+  justify-content:center;
+  text-decoration:none;
+  font-size:28px;
+  background:linear-gradient(135deg,#ff7a00,#ffd700);
+  box-shadow:0 0 25px rgba(255,165,0,.5);
+  z-index:999;
+  animation:pulse 1.5s infinite;
+}
+
+@keyframes pulse{
+  0%{
+    box-shadow:0 0 0 0 rgba(255,165,0,.6);
+  }
+  70%{
+    box-shadow:0 0 0 15px rgba(255,165,0,0);
+  }
+  100%{
+    box-shadow:0 0 0 0 rgba(255,165,0,0);
+  }
+}
+
+/* =========================
+   MOBILE
+========================= */
+@media(max-width:768px){
+
+  .wrapper{
+    padding:8px 0;
+  }
+
+  .header{
+    padding:12px;
+  }
+
+  .top-bar,
+  .stats-box{
+    border-radius:0;
+  }
+
+  .logo img{
+    height:34px;
+  }
+
+  .menu-btn{
+    gap:8px;
+  }
+
+  .menu-btn a{
+    padding:8px 14px;
+    font-size:12px;
+  }
+
+  .hero{
+    border-radius:14px;
+  }
+
+  .main-content{
+    flex-direction:column;
+  }
+
+  /* PROVIDER MOBILE */
+  .sidebar{
+    width:100%;
+    position:relative;
+    top:0;
+    overflow-x:auto;
+    overflow-y:hidden;
+    padding:10px;
+  }
+
+  .sidebar::-webkit-scrollbar{
+    display:none;
+  }
+
+  .live-badge{
+    display:none;
+  }
+#providerList{
+  display:flex;
+  flex-direction:row;
+  gap:10px;
+  overflow-x:auto;
+  scroll-behavior:smooth;
+}
+
+  .provider{
+    min-width:78px;
+    height:78px;
+    flex-direction:column;
+    justify-content:center;
+    align-items:center;
+    gap:6px;
+    padding:8px;
+    border-radius:50%;
+  }
+
+  .provider img{
+    width:30px;
+    height:30px;
+  }
+
+  .provider span{
+    font-size:9px;
+    text-align:center;
+    line-height:1.2;
+  }
+
+  /* CONTENT MOBILE */
+  .top-bar{
+    flex-direction:column;
+    align-items:flex-start;
+    padding:15px;
+  }
+
+  .top-bar h2{
+    font-size:20px;
+    line-height:1.4;
+  }
+
+  .time-row{
+    font-size:13px;
+  }
+
+  .right{
+    width:100%;
+  }
+
+  .right input{
+    height:46px;
+    font-size:13px;
+  }
+
+  .stats-box{
+    padding:15px;
+  }
+
+  .online{
+    font-size:14px;
+  }
+
+  .top-games{
+    font-size:14px;
+  }
+
+  .top-games li{
+    font-size:13px;
+  }
+
+  #gameFrame{
+    min-height:1800px;
+    border-radius:14px;
+  }
+
+  .livechat{
+    width:56px;
+    height:56px;
+    font-size:24px;
+    right:15px;
+    bottom:15px;
+  }
+
+ @media(max-width:768px){
+
+  .main-content{
+    display:block;
+    width:100%;
+  }
+
+  .content-area{
+    width:100%;
+  }
+
+  .sidebar{
+    width:100%;
+  }
+
+  body{
+    overflow-x:hidden;
+  }
+
+}
+}
+
+#scrollTopBtn{
+  position:fixed;
+  bottom:100px;
+  right:15px;
+  width:48px;
+  height:48px;
+  border:none;
+  border-radius:50%;
+  background:linear-gradient(135deg,#ff7a00,#ffd700);
+  color:#000;
+  font-size:22px;
+  display:flex;
+  align-items:center;
+  justify-content:center;
+  opacity:0;
+  pointer-events:none;
+  transition:0.3s;
+  z-index:99999;
+  box-shadow:0 0 15px rgba(255,165,0,.7);
+}
+
+.top-games ul{
+  list-style:none;
+  padding-left:0;
+}
+
+.game-row{
+  display:flex;
+  justify-content:space-between;
+  align-items:center;
+  font-size:14px;
+  margin:6px 0;
+}
+
+.game-name{
+  font-weight:600;
+}
+
+.game-provider{
+  color:#ffd700;
+  font-size:13px;
+}
+
+/* Tombol floating APK di kiri bawah */
+.floating-apk {
+  position: fixed;
+  left: 20px;      /* Jarak dari kiri */
+  bottom: 20px;    /* Jarak dari bawah */
+  z-index: 9999;
+  cursor: pointer;
+  transition: transform 0.25s ease, filter 0.25s ease;
+}
+
+.floating-apk img.apk-gif {
+  display: block;
+  width: 80px;     /* Sesuaikan ukuran gambar */
+  height: auto;
+  border-radius: 12px;   /* Opsional untuk sudut halus */
+  box-shadow: 0 0 25px rgba(255,165,0,0.5);
+  transition: transform 0.25s ease, box-shadow 0.25s ease, filter 0.25s ease;
+}
+
+/* Hover efek */
+.floating-apk:hover img.apk-gif {
+  transform: scale(1.1);
+  box-shadow: 0 0 35px rgba(255,200,0,0.8);
+  filter: brightness(1.2);
+}
+
+/* Saat diklik / aktif */
+.floating-apk:active img.apk-gif {
+  transform: scale(0.95);
+  box-shadow: 0 0 15px rgba(255,150,0,0.7);
+}
+
+</style>
+</head>
+<body>
+<button id="scrollTopBtn">↑</button>
+<div class="wrapper">
+
+<!-- HEADER -->
+<div class="header">
+  <div class="logo">
+    <img src="assets/images/logo.png" onerror="this.style.display='none';document.getElementById('fallback').style.display='block'">
+    <div id="fallback" class="logo-text" style="display:none;">🔥 PERCOBAAN</div>
+  </div>
+  <div class="menu-btn">
+    <a href="#" class="login">LOGIN</a>
+    <a href="#" class="daftar">DAFTAR</a>
+  </div>
+</div>
+
+<div class="marquee">
+  <span>🔥 RTP LIVE UPDATE SETIAP 15 DETIK | 🎯 PILIH PROVIDER FAVORIT ANDA | 💰 MAINKAN DENGAN BIJAK</span>
+</div>
+
+<div class="hero">
+  <img src="assets/images/banner1.png" class="active">
+</div>
+
+<div class="main-content">
+  <div class="sidebar">
+    <div class="live-badge"><div class="live-dot"></div>LIVE RTP</div>
+    <div id="providerList"></div>
+  </div>
+
+  <div class="content-area">
+    <div class="top-bar">
+      <div class="left">
+        <h2>RTP LIVE PERCOBAAN BOSKU</h2>
+        <div class="time-row">
+          <span id="time"></span>
+          <span class="timezone">WIB (GMT+7)</span>
+        </div>
+      </div>
+      <div class="right">
+        <input type="text" id="searchGame" placeholder="Cari Game...">
+      </div>
+    </div>
+    <div class="stats-box">
+  <div class="online">👥 <span id="onlineUsers"></span> sedang online</div>
+  <div class="top-games">
+    🔥 Top Game Terfavorit Hari Ini:
+    <ul id="topGames"></ul>
+  </div>
+</div>
+
+    <iframe src="pragmatic-play/index.html" id="gameFrame"></iframe>
+</div>
+</div>
+
+<a href="https://alexis4dno1.com/downloads/app/Alexis4D.apk?signature=iLx4JLU" target="_blank" class="floating-apk">
+  <img src="assets/images/apk.png" alt="Download APK" class="apk-gif">
+</a>
+
+<a href="https://wa.me/628xxxxxxx" target="_blank" class="livechat">💬</a>
+
+<script>
+// List Provider
+const providers = [
+  { name:"Pragmatic Play", img:"https://img.viva88athenae.com/pp.png", link:"pragmatic-play/index.html" },
+  { name:"PG Soft", img:"https://img.viva88athenae.com/pg.png", link:"PG-SOFT/index.html" },
+  { name:"Jili", img:"https://img.viva88athenae.com/jl.png", link:"Jili/index.html" },
+  { name:"Megawin", img:"https://img.viva88athenae.com/mgw.png", link:"Megawin/index.html" },
+  { name:"Shady Lady", img:"https://img.viva88athenae.com/sdl.png", link:"Shady-Lady/index.html" },
+  { name:"Habanero", img:"https://img.viva88athenae.com/hb.png", link:"Habanero/index.html" },
+  { name:"Spadegaming", img:"https://img.viva88athenae.com/sg.png", link:"Spadegaming/index.html" },
+  { name:"Nolimit City", img:"https://img.viva88athenae.com/nlc.png", link:"Nolimit-City/index.html" },
+  { name:"Fastspin", img:"https://img.viva88athenae.com/fs.png", link:"fast-spin/index.html" },
+  { name:"Joker", img:"https://img.viva88athenae.com/jg.png", link:"joker/index.html" },
+  { name:"Microgaming", img:"https://img.viva88athenae.com/mg.png", link:"Microgaming/index.html" },
+  { name:"5G Games", img:"https://img.viva88athenae.com/fgs.png", link:"5G/index.html" },
+  { name:"Hacksaw Gaming", img:"https://img.viva88athenae.com/hks.png", link:"hacksaw-gaming/index.html" },
+  { name:"Nextspin", img:"https://img.viva88athenae.com/nxt.png", link:"Next-spin/index.html" },
+  { name:"Playstar", img:"https://img.viva88athenae.com/ps.png", link:"playstar/index.html" },
+  { name:"Playtech", img:"https://img.viva88athenae.com/pt.png", link:"playtech/index.html" },
+  { name:"Advant Play", img:"https://img.viva88athenae.com/av.png", link:"advantplay/index.html" },
+  { name:"Cosmoplay", img:"https://img.viva88athenae.com/cmp.png", link:"cosmoplay/index.html" },
+  { name:"CQ9", img:"https://img.viva88athenae.com/cq9.png", link:"cq9/index.html" },
+  { name:"Wow Gaming", img:"https://img.viva88athenae.com/wow.png", link:"wowgaming/index.html" },
+  { name:"Live22", img:"https://img.viva88athenae.com/l22.png", link:"live22/index.html" },
+  { name:"SBO Slot", img:"https://img.viva88athenae.com/ss.png", link:"sboslot/index.html" }
+];
+
+const container = document.getElementById("providerList");
+const gameFrame = document.getElementById("gameFrame");
+
+// Buat sidebar provider
+providers.forEach(p => {
+  const div = document.createElement("div");
+  div.className = "provider";
+  div.innerHTML = `<img src="${p.img}"><span>${p.name.toUpperCase()}</span>`;
+  div.onclick = () => {
+    document.querySelectorAll(".provider").forEach(el => el.classList.remove("active"));
+    div.classList.add("active");
+    gameFrame.src = p.link;
+    document.getElementById("searchGame").value = "";
+  };
+  container.appendChild(div);
+});
+window.addEventListener("load", () => {
+  const first = document.querySelector(".provider");
+  if(first) first.click();
+});
+
+// Default highlight Pragmatic Play
+document.querySelectorAll(".provider").forEach(el => {
+  if(el.querySelector("span").innerText === "PRAGMATIC PLAY") el.classList.add("active");
+});
+
+// JAM
+function updateTime(){
+  let now = new Date();
+  document.getElementById("time").innerText = now.toLocaleString("id-ID", {timeZone:"Asia/Jakarta"});
+}
+setInterval(updateTime,1000);
+updateTime();
+
+// Search input
+const searchInput = document.getElementById("searchGame");
+searchInput.addEventListener("input", function() {
+  const keyword = this.value.toLowerCase();
+  const activeProviderName = document.querySelector(".provider.active span").innerText.toLowerCase();
+  const activeProvider = providers.find(p => p.name.toLowerCase() === activeProviderName);
+if (gameFrame.contentWindow) {
+  gameFrame.contentWindow.postMessage({ type: "search", keyword }, "*");
+}
+});
+
+// ==========================
+// SYSTEM 15 MENIT
+// ==========================
+const INTERVAL = 15 * 60 * 500;
+
+
+function generateOnlineUsers(prev){
+  let hour = new Date().getHours();
+
+  let min, max;
+
+  // 00:00 - 03:00 (masih ramai)
+  if(hour >= 0 && hour < 3){
+    min = 9000;
+    max = 13000;
+  }
+
+  // 03:00 - 10:00 (turun / sepi)
+  else if(hour >= 3 && hour < 10){
+    min = 5000;
+    max = 7000;
+  }
+
+  // 10:00 - 18:00 (mulai naik)
+  else if(hour >= 10 && hour < 18){
+    min = 7000;
+    max = 10000;
+  }
+
+  // 18:00 - 20:00 (menuju ramai)
+  else if(hour >= 18 && hour < 20){
+    min = 9000;
+    max = 12000;
+  }
+
+  // 20:00 - 24:00 (peak)
+  else{
+    min = 11000;
+    max = 15000;
+  }
+
+ 
+  if(!prev){
+    return Math.floor(Math.random() * (max - min + 1)) + min;
+  }
+
+ 
+  let change = Math.floor(Math.random() * 300 - 150);
+
+  let next = prev + change;
+
+  
+  if(next < min) next = min;
+  if(next > max) next = max;
+
+  return next;
+}
+function updateOnlineBase(){
+  let data = JSON.parse(localStorage.getItem("onlineData"));
+  let now = Date.now();
+
+  if(!data || now - data.time > INTERVAL){
+    data = {
+  base: generateOnlineUsers(data?.base || null),
+  time: now
+};
+    localStorage.setItem("onlineData", JSON.stringify(data));
+  }
+
+  return data.base;
+}
+
+
+let baseOnline = updateOnlineBase();
+
+
+function renderOnline(){
+  let dynamic = baseOnline + Math.floor(Math.random() * 30 - 15); 
+  document.getElementById("onlineUsers").innerText =
+    dynamic.toLocaleString("id-ID");
+}
+
+
+setInterval(renderOnline, 5000);
+
+
+setInterval(() => {
+  baseOnline = updateOnlineBase();
+}, 60000);
+
+
+renderOnline();
+
+// ==========================
+// TOP GAME
+// ==========================
+const gameList = [
+  { name:"Gates of Olympus", provider:"Pragmatic Play" },
+  { name:"Gates of Olympus 1000", provider:"Pragmatic Play" },
+  { name:"Gates of Olympus Super Scatter", provider:"Pragmatic Play" },
+  { name:"Sweet Bonanza", provider:"Pragmatic Play" },
+  { name:"Sweet Bonanza 1000", provider:"Pragmatic Play" },
+  { name:"Sweet Bonanza Super Scatter", provider:"Pragmatic Play" },
+  { name:"Starlight Princess", provider:"Pragmatic Play" },
+  { name:"Starlight Princess 1000", provider:"Pragmatic Play" },
+  { name:"Starlight Princess Super Scatter", provider:"Pragmatic Play" },
+  { name:"Sugar Rush", provider:"Pragmatic Play" },
+  { name:"Sugar Rush 1000", provider:"Pragmatic Play" },
+  { name:"Gatot Kaca", provider:"Pragmatic Play" },
+  { name:"Gatot Kaca 1000", provider:"Pragmatic Play" },
+  { name:"Gatot Kaca Super Scatter", provider:"Pragmatic Play" },
+  { name:"Mahjong Wins 3", provider:"Pragmatic Play" },
+  { name:"Bonanza Gold", provider:"Pragmatic Play" },
+  { name:"Mahjong Ways", provider:"PG Soft" },
+  { name:"Mahjong Ways 2", provider:"PG Soft" },
+  { name:"Lucky Neko", provider:"PG Soft" },
+  { name:"Wild Bandito", provider:"PG Soft" },
+  { name:"Wild Bounty", provider:"PG Soft" },
+  { name:"Wild Ape", provider:"PG Soft" },
+  { name:"Fortune Tiger", provider:"PG Soft" },
+  { name:"Dragon Hatch", provider:"PG Soft" },
+  { name:"Hot Hot Fruit", provider:"Habanero" },
+  { name:"Fa Cai Shen", provider:"Habanero" },
+  { name:"Super Ace", provider:"Jili" },
+  { name:"Crazy 777", provider:"Jili" },
+  { name:"Roma Legacy", provider:"Spadegaming" },
+  { name:"Fire Chibi", provider:"CQ9" },
+  { name:"Wanted Dead or a Wild", provider:"Hacksaw Gaming" }
+
+
+];
+
+function getRandomGames(){
+  let lastData = JSON.parse(localStorage.getItem("topGames"));
+
+  let availableGames = [...gameList];
+
+  
+  if(lastData && lastData.list){
+    availableGames = availableGames.filter(g => !lastData.list.includes(g));
+  }
+
+  
+  if(availableGames.length < 3){
+    availableGames = [...gameList];
+  }
+
+ 
+  let shuffled = availableGames.sort(() => 0.5 - Math.random());
+  return shuffled.slice(0,3);
+}
+
+function updateTopGames(){
+  let data = JSON.parse(localStorage.getItem("topGames"));
+
+  let now = Date.now();
+
+  if(!data || now - data.time > INTERVAL){
+    data = {
+      list: getRandomGames(),
+      time: now
+    };
+    localStorage.setItem("topGames", JSON.stringify(data));
+  }
+
+  const ul = document.getElementById("topGames");
+  ul.innerHTML = "";
+
+  data.list.forEach(game => {
+  let li = document.createElement("li");
+
+  li.innerHTML = `
+    <div class="game-row">
+      <span class="game-name">👑 ${game.name}</span>
+      <span class="game-provider">[${game.provider}]</span>
+    </div>
+  `;
+
+  ul.appendChild(li);
+});
+}
+
+updateTopGames();
+setInterval(updateTopGames, 60000);
+
+// ==========================
+// SCROLL TOP BUTTON
+// ==========================
+const scrollBtn = document.getElementById("scrollTopBtn");
+
+window.addEventListener("scroll", () => {
+  if (window.scrollY > 200) {
+    scrollBtn.style.opacity = "1";
+    scrollBtn.style.pointerEvents = "auto";
+  } else {
+    scrollBtn.style.opacity = "0";
+    scrollBtn.style.pointerEvents = "none";
+  }
+});
+
+scrollBtn.addEventListener("click", () => {
+  window.scrollTo({
+    top: 0,
+    behavior: "smooth"
+  });
+});
+
+// ==========================
+// AUTO SCROLL PROVIDER (MOBILE)
+// ==========================
+const providerList = document.getElementById("providerList");
+
+let autoScroll;
+
+// DUPLIKAT BIAR LOOP HALUS
+function duplicateProvider(){
+  providers.forEach(p => {
+    const div = document.createElement("div");
+    div.className = "provider";
+
+    div.innerHTML = `<img src="${p.img}"><span>${p.name.toUpperCase()}</span>`;
+
+    div.onclick = () => {
+      document.querySelectorAll(".provider").forEach(el => el.classList.remove("active"));
+      div.classList.add("active");
+      gameFrame.src = p.link;
+      document.getElementById("searchGame").value = "";
+    };
+
+    providerList.appendChild(div);
+  });
+}
+
+// START AUTO SCROLL
+function startAutoScroll(){
+  stopAutoScroll(); // reset dulu
+
+  autoScroll = setInterval(() => {
+    providerList.scrollLeft += 1;
+
+    if(providerList.scrollLeft >= providerList.scrollWidth / 2){
+      providerList.scrollLeft = 0;
+    }
+  }, 16); // lebih smooth
+}
+
+// STOP
+function stopAutoScroll(){
+  if(autoScroll) clearInterval(autoScroll);
+}
+
+// INIT MOBILE
+function initMobileScroll(){
+  if(window.matchMedia("(max-width: 768px)").matches){
+
+    duplicateProvider();
+
+    setTimeout(() => {
+      startAutoScroll();
+    }, 500);
+
+    // PAUSE SAAT INTERAKSI
+    providerList.addEventListener("touchstart", stopAutoScroll);
+    providerList.addEventListener("touchend", startAutoScroll);
+
+    providerList.addEventListener("mousedown", stopAutoScroll);
+    providerList.addEventListener("mouseup", startAutoScroll);
+  } else {
+    stopAutoScroll();
+  }
+}
+
+// JALANKAN SAAT LOAD
+window.addEventListener("load", initMobileScroll);
+
+// JALANKAN LAGI SAAT RESIZE (HP rotate)
+window.addEventListener("resize", initMobileScroll);
+
+let isDown = false;
+let startX;
+let scrollLeft;
+
+providerList.addEventListener("mousedown", (e) => {
+  isDown = true;
+  startX = e.pageX - providerList.offsetLeft;
+  scrollLeft = providerList.scrollLeft;
+});
+
+providerList.addEventListener("mouseleave", () => isDown = false);
+providerList.addEventListener("mouseup", () => isDown = false);
+
+providerList.addEventListener("mousemove", (e) => {
+  if(!isDown) return;
+  e.preventDefault();
+  const x = e.pageX - providerList.offsetLeft;
+  const walk = (x - startX) * 2; // speed drag
+  providerList.scrollLeft = scrollLeft - walk;
+});
+</script>
+
+</body>
+</html>
