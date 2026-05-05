@@ -3,484 +3,1045 @@
 <head>
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
-<title>RTP LIVE SPADEGAMING</title>
+<title>RTP LIVE COBA</title>
 <style>
-body{background:#0b0b0b;font-family:sans-serif;margin:0;color:#fff}
+html, body{
+  margin:0;
+  padding:0;
+  overflow-x:hidden;
+}
+/* =========================
+   RESET
+========================= */
+*{
+  margin:0;
+  padding:0;
+  box-sizing:border-box;
+  font-family:sans-serif;
+}
 
-/* GRID */
-.grid{
-  display:grid;
-  grid-template-columns:repeat(auto-fill,minmax(160px,1fr));
+
+html,body{
+  width:100%;
+  overflow-x:hidden;
+  background:#050505;
+  color:#fff;
+}
+
+/* =========================
+   WRAPPER
+========================= */
+.wrapper{
+  max-width:1100px;
+  margin:20px auto; 
+}
+/* =========================
+   HEADER
+========================= */
+.header{
+  display:flex;
+  justify-content:space-between;
+  align-items:center;
+  gap:15px;
+  padding:14px 20px;
+  border-radius:14px;
+  background:linear-gradient(90deg,#ff7a00,#ffd700);
+  margin-bottom:5px;
+}
+
+.logo{
+  display:flex;
+  align-items:center;
+}
+
+.logo img{
+  height:42px;
+  display:block;
+}
+
+.logo-text{
+  font-size:22px;
+  font-weight:700;
+  color:#000;
+}
+
+.menu-btn{
+  display:flex;
+  gap:10px;
+}
+
+.menu-btn a{
+  text-decoration:none;
+  color:#fff;
+  padding:10px 22px;
+  border-radius:10px;
+  font-size:14px;
+  font-weight:700;
+  transition:.25s ease;
+}
+
+.login{
+  background:linear-gradient(135deg,#ff7a00,#ffb300);
+  color:#000 !important;
+}
+
+.daftar{
+  background:linear-gradient(135deg,#ff7a00,#ffb300);
+  color:#000 !important;
+}
+
+.menu-btn a:hover{
+  transform:translateY(-2px);
+}
+
+/* =========================
+   MARQUEE
+========================= */
+.marquee{
+  background:#111;
+  border:1px solid #1f1f1f;
+  border-radius:12px;
+  padding:10px;
+  overflow:hidden;
+  white-space:nowrap;
+  margin-bottom:5px;
+}
+
+.marquee span{
+  display:inline-block;
+  padding-left:100%;
+  animation:jalan 18s linear infinite;
+  color:#ffd700;
+  font-size:14px;
+}
+
+@keyframes jalan{
+  0%{transform:translateX(0);}
+  100%{transform:translateX(-100%);}
+}
+
+/* =========================
+   HERO
+========================= */
+.hero {
+  width: 100%;
+  height: auto;
+  overflow: hidden;
+  position: relative; /* <-- INI PENTING */
+}
+
+.hero img {
+  display: block;
+  width: 100%;
+  height: auto;
+}
+.hero::after{
+  content:"";
+  position:absolute;
+  inset:0;
+  background:linear-gradient(to top,rgba(0,0,0,.45),transparent);
+}
+
+/* =========================
+   MAIN LAYOUT
+========================= */
+.main-content{
+  display:flex;
+  gap:20px;
+  align-items:flex-start;
+}
+
+/* =========================
+   SIDEBAR
+========================= */
+.sidebar{
+  width:300px;
+  background:#0f0f0f;
+  border:1px solid #1e1e1e;
+  border-radius:16px;
+  padding:12px;
+  flex-shrink:0;
+  position:sticky;
+  top:10px;
+}
+
+.live-badge{
+  display:flex;
+  align-items:center;
+  gap:8px;
+  background:#ff1f1f;
+  padding:8px 12px;
+  border-radius:999px;
+  font-size:12px;
+  font-weight:700;
+  width:max-content;
+  margin-bottom:15px;
+}
+
+.live-dot{
+  width:8px;
+  height:8px;
+  border-radius:50%;
+  background:#fff;
+  animation:blink 1s infinite;
+}
+
+@keyframes blink{
+  50%{opacity:.3;}
+}
+
+#providerList{
+  display:flex;
+  flex-direction:column; /* 🔥 ubah ke column */
+  gap:10px;
+}
+
+.provider{
+  display:flex;
+  align-items:center;
   gap:12px;
   padding:12px;
-}
-
-/* CARD */
-.card{
-  width:100%;
-  height:85%;
-  object-position:80% center;
-  aspect-ratio:3/4; 
-  background:#111;
-  border-radius:14px;
-  overflow:hidden;
-  position:relative;
+  border-radius:12px;
   cursor:pointer;
+  background:#171717;
+  border:1px solid transparent;
+  transition:.25s ease;
+  min-width:90px;
+  flex-shrink:0;
 }
 
-/* LABEL */
-.label{position:absolute;top:5px;left:5px;background:red;padding:3px 6px;font-size:10px;font-weight:bold;border-radius:4px;}
-.label.top{background:orange;}
-.label.new{background:red;}
+.provider:hover{
+  border-color:#ff7a00;
+  background:#1d1d1d;
+}
 
-.card img{width:100%;height:90%;object-fit:contain;background:#000;}
+.provider.active{
+  background:linear-gradient(135deg,#ff7a00,#ffb300);
+}
 
-.rtp{position:absolute;bottom:0;left:0;width:100%;height:22px;background:rgba(255,255,255,0.3);border-radius:4px;overflow:hidden;backdrop-filter:blur(4px);}
-.rtp-fill{position:relative;height:100%;width:var(--percent,50%);overflow:hidden;border-radius:4px;background:none;}
-.rtp-fill::before{content:"";position:absolute;top:0;left:0;width:300%;height:100%;background:linear-gradient(90deg,#22c55e 0%,#4ade80 20%,#22c55e 40%,#4ade80 60%,#22c55e 80%,#4ade80 100%);background-size:300% 100%;animation:moveForward 6s linear infinite;}
-.rtp-fill.high::before{background:repeating-linear-gradient(45deg,rgba(255,255,255,0.2),rgba(255,255,255,0.2) 10px,transparent 10px,transparent 20px),linear-gradient(90deg,#22c55e,#4ade80,#22c55e);}
-.rtp-fill.mid::before{background:repeating-linear-gradient(45deg,rgba(255,255,255,0.2),rgba(255,255,255,0.2) 10px,transparent 10px,transparent 20px),linear-gradient(90deg,#facc15,#fde047,#facc15);}
-.rtp-fill.low::before{background:repeating-linear-gradient(45deg,rgba(255,255,255,0.2),rgba(255,255,255,0.2) 10px,transparent 10px,transparent 20px),linear-gradient(90deg,#ef4444,#f87171,#ef4444);}
-@keyframes moveForward{0%{transform:translateX(0);}100%{transform:translateX(-66%);}}
+.provider img{
+  width:34px;
+  height:34px;
+  object-fit:contain;
+}
 
-.rtp-text{position:absolute;left:50%;top:50%;transform:translate(-50%,-50%);font-size:12px;font-weight:bold;color:#000;z-index:2;pointer-events:none;text-shadow:0 0 3px #fff;}
-.card .overlay-btn{position:absolute;top:50%;left:50%;transform:translate(-50%,-50%);width:80%;height:40px;background:rgba(223,183,5,0.9);color:#000;font-weight:bold;font-size:12px;text-align:center;line-height:40px;opacity:0;transition:opacity 0.3s ease;pointer-events:none;border-radius:6px;}
-.card:hover .overlay-btn{opacity:1;pointer-events:auto;}
+.provider span{
+  font-size:12px;
+  font-weight:700;
+  color:#fff;
+  line-height:1.3;
+}
 
-/* POPUP */
-.popup{position:fixed;top:0;left:0;width:100%;height:100%;background:rgba(0,0,0,0.9);display:none;justify-content:center;align-items:center;}
-.popup-content{width:92%;max-width:360px;background:#1c1c1c;border-radius:16px;overflow:hidden;position:relative;}
-.popup-header{background:#dfb705;text-align:center;padding:14px;font-weight:bold;}
-.popup-body{padding:14px;font-size:12px;}
-.close{position:absolute;top:8px;right:8px;background:#fff;color:#000;width:25px;height:25px;border-radius:50%;text-align:center;line-height:25px;cursor:pointer;}
-.info-box{background:#111;padding:10px;border-radius:8px;margin-bottom:10px;}
-.info-row{display:flex;justify-content:space-between;padding:6px 0;border-bottom:1px solid #222;}
-.info-row:last-child{border-bottom:none;}
-.info-label{color:#aaa;}
-.info-value{font-weight:bold;}
-.pola-title{text-align:center;background:#dfb705;padding:6px;font-size:11px;font-weight:bold;margin:10px 0;}
-.step{background:#0f0f0f;padding:12px;border-radius:10px;margin-bottom:10px;border-left:4px solid #dfb705;}
-.step b{display:block;margin-bottom:3px;}
-.final-red{color:#ff2d2d;font-weight:bold;margin-top:10px;}
-.green{color:#22c55e;text-align:center;margin-top:10px;font-weight:bold;}
-.warning-red{background:#ef4444;color:#fff;padding:12px;border-radius:8px;text-align:center;font-size:12px;font-weight:bold;margin-bottom:10px;}
-.btn{display:block;text-align:center;padding:14px;background:#dfb705;color:#fff;text-decoration:none;font-weight:bold;}
+/* =========================
+   CONTENT
+========================= */
+.content-area{
+  flex:1;
+  min-width:0;
+  display:flex;
+  flex-direction:column;
+  gap:14px;
+}
+
+/* =========================
+   TOP BAR
+========================= */
+.top-bar{
+  display:flex;
+  justify-content:space-between;
+  align-items:center;
+  gap:15px;
+  background:#0f0f0f;
+  border:1px solid #ff7a00;
+  border-radius:16px;
+  padding:18px;
+}
+
+.top-bar h2{
+  font-size:28px;
+  color:#ffd700;
+  margin-bottom:5px;
+}
+
+.time-row{
+  display:flex;
+  flex-wrap:wrap;
+  gap:8px;
+  font-size:14px;
+  color:#d2d2d2;
+}
+
+.timezone{
+  color:#ffd700;
+  font-weight:700;
+}
+
+.right{
+  width:280px;
+}
+
+.right input{
+  width:100%;
+  height:48px;
+  border:none;
+  outline:none;
+  border-radius:12px;
+  background:#050505;
+  border:1px solid #ff7a00;
+  color:#fff;
+  padding:0 15px;
+  font-size:14px;
+}
+
+/* =========================
+   STATS
+========================= */
+.stats-box{
+  background:#0f0f0f;
+  border:1px solid #ff7a00;
+  border-radius:16px;
+  padding:18px;
+}
+
+.online{
+  font-size:16px;
+  color:#ffd700;
+  margin-bottom:15px;
+  font-weight:700;
+}
+
+.top-games{
+  font-size:16px;
+  font-weight:700;
+}
+
+.top-games ul{
+  margin-top:10px;
+  padding-left:20px;
+}
+
+.top-games li{
+  margin:8px 0;
+  color:#fff;
+  font-size:14px;
+  line-height:1.5;
+}
+
+/* =========================
+   IFRAME
+========================= */
+#gameFrame{
+  width:100%;
+  min-height:1200px;
+  border:none;
+  border-radius:16px;
+  background:#111;
+  display:block;
+  overflow:hidden;
+}
+
+/* =========================
+   LIVE CHAT
+========================= */
+.livechat{
+  position:fixed;
+  right:20px;
+  bottom:20px;
+  width:62px;
+  height:62px;
+  border-radius:50%;
+  display:flex;
+  align-items:center;
+  justify-content:center;
+  text-decoration:none;
+  font-size:28px;
+  background:linear-gradient(135deg,#ff7a00,#ffd700);
+  box-shadow:0 0 25px rgba(255,165,0,.5);
+  z-index:999;
+  animation:pulse 1.5s infinite;
+}
+
+@keyframes pulse{
+  0%{
+    box-shadow:0 0 0 0 rgba(255,165,0,.6);
+  }
+  70%{
+    box-shadow:0 0 0 15px rgba(255,165,0,0);
+  }
+  100%{
+    box-shadow:0 0 0 0 rgba(255,165,0,0);
+  }
+}
+
+/* =========================
+   MOBILE
+========================= */
+@media(max-width:768px){
+
+  .wrapper{
+    padding:8px 0;
+  }
+
+  .header{
+    padding:12px;
+  }
+
+  .top-bar,
+  .stats-box{
+    border-radius:0;
+  }
+
+  .logo img{
+    height:34px;
+  }
+
+  .menu-btn{
+    gap:8px;
+  }
+
+  .menu-btn a{
+    padding:8px 14px;
+    font-size:12px;
+  }
+
+  .hero{
+    border-radius:14px;
+  }
+
+  .main-content{
+    flex-direction:column;
+  }
+
+  /* PROVIDER MOBILE */
+  .sidebar{
+    width:100%;
+    position:relative;
+    top:0;
+    overflow-x:auto;
+    overflow-y:hidden;
+    padding:10px;
+  }
+
+  .sidebar::-webkit-scrollbar{
+    display:none;
+  }
+
+  .live-badge{
+    display:none;
+  }
+#providerList{
+  display:flex;
+  flex-direction:row;
+  gap:10px;
+  overflow-x:auto;
+  scroll-behavior:smooth;
+}
+
+  .provider{
+    min-width:78px;
+    height:78px;
+    flex-direction:column;
+    justify-content:center;
+    align-items:center;
+    gap:6px;
+    padding:8px;
+    border-radius:50%;
+  }
+
+  .provider img{
+    width:30px;
+    height:30px;
+  }
+
+  .provider span{
+    font-size:9px;
+    text-align:center;
+    line-height:1.2;
+  }
+
+  /* CONTENT MOBILE */
+  .top-bar{
+    flex-direction:column;
+    align-items:flex-start;
+    padding:15px;
+  }
+
+  .top-bar h2{
+    font-size:20px;
+    line-height:1.4;
+  }
+
+  .time-row{
+    font-size:13px;
+  }
+
+  .right{
+    width:100%;
+  }
+
+  .right input{
+    height:46px;
+    font-size:13px;
+  }
+
+  .stats-box{
+    padding:15px;
+  }
+
+  .online{
+    font-size:14px;
+  }
+
+  .top-games{
+    font-size:14px;
+  }
+
+  .top-games li{
+    font-size:13px;
+  }
+
+  #gameFrame{
+    min-height:1800px;
+    border-radius:14px;
+  }
+
+  .livechat{
+    width:56px;
+    height:56px;
+    font-size:24px;
+    right:15px;
+    bottom:15px;
+  }
+
+ @media(max-width:768px){
+
+  .main-content{
+    display:block;
+    width:100%;
+  }
+
+  .content-area{
+    width:100%;
+  }
+
+  .sidebar{
+    width:100%;
+  }
+
+  body{
+    overflow-x:hidden;
+  }
+
+}
+}
+
+#scrollTopBtn{
+  position:fixed;
+  bottom:100px;
+  right:15px;
+  width:48px;
+  height:48px;
+  border:none;
+  border-radius:50%;
+  background:linear-gradient(135deg,#ff7a00,#ffd700);
+  color:#000;
+  font-size:22px;
+  display:flex;
+  align-items:center;
+  justify-content:center;
+  opacity:0;
+  pointer-events:none;
+  transition:0.3s;
+  z-index:99999;
+  box-shadow:0 0 15px rgba(255,165,0,.7);
+}
+
+.top-games ul{
+  list-style:none;
+  padding-left:0;
+}
+
+.game-row{
+  display:flex;
+  justify-content:space-between;
+  align-items:center;
+  font-size:14px;
+  margin:6px 0;
+}
+
+.game-name{
+  font-weight:600;
+}
+
+.game-provider{
+  color:#ffd700;
+  font-size:13px;
+}
+
+/* Tombol floating APK di kiri bawah */
+.floating-apk {
+  position: fixed;
+  left: 20px;      /* Jarak dari kiri */
+  bottom: 20px;    /* Jarak dari bawah */
+  z-index: 9999;
+  cursor: pointer;
+  transition: transform 0.25s ease, filter 0.25s ease;
+}
+
+.floating-apk img.apk-gif {
+  display: block;
+  width: 80px;     /* Sesuaikan ukuran gambar */
+  height: auto;
+  border-radius: 12px;   /* Opsional untuk sudut halus */
+  box-shadow: 0 0 25px rgba(255,165,0,0.5);
+  transition: transform 0.25s ease, box-shadow 0.25s ease, filter 0.25s ease;
+}
+
+/* Hover efek */
+.floating-apk:hover img.apk-gif {
+  transform: scale(1.1);
+  box-shadow: 0 0 35px rgba(255,200,0,0.8);
+  filter: brightness(1.2);
+}
+
+/* Saat diklik / aktif */
+.floating-apk:active img.apk-gif {
+  transform: scale(0.95);
+  box-shadow: 0 0 15px rgba(255,150,0,0.7);
+}
+
 </style>
 </head>
-
 <body>
+<button id="scrollTopBtn">↑</button>
+<div class="wrapper">
 
-<div class="grid" id="grid"></div>
-
-<div class="popup" id="popup">
-  <div class="popup-content">
-    <div class="close" onclick="closePopup()">×</div>
-    <div class="popup-header">TRIK & POLA</div>
-    <div class="popup-body"></div>
-    <a href="https://linkloginanda.com" class="btn">MAIN SEKARANG</a>
+<!-- HEADER -->
+<div class="header">
+  <div class="logo">
+    <img src="assets/images/logo.png" onerror="this.style.display='none';document.getElementById('fallback').style.display='block'">
+    <div id="fallback" class="logo-text" style="display:none;">🔥 PERCOBAAN</div>
+  </div>
+  <div class="menu-btn">
+    <a href="#" class="login">LOGIN</a>
+    <a href="#" class="daftar">DAFTAR</a>
   </div>
 </div>
 
+<div class="marquee">
+  <span>🔥 RTP LIVE UPDATE SETIAP 15 DETIK | 🎯 PILIH PROVIDER FAVORIT ANDA | 💰 MAINKAN DENGAN BIJAK</span>
+</div>
+
+<div class="hero">
+  <img src="assets/images/banner1.png" class="active">
+</div>
+
+<div class="main-content">
+  <div class="sidebar">
+    <div class="live-badge"><div class="live-dot"></div>LIVE RTP</div>
+    <div id="providerList"></div>
+  </div>
+
+  <div class="content-area">
+    <div class="top-bar">
+      <div class="left">
+        <h2>RTP LIVE PERCOBAAN BOSKU</h2>
+        <div class="time-row">
+          <span id="time"></span>
+          <span class="timezone">WIB (GMT+7)</span>
+        </div>
+      </div>
+      <div class="right">
+        <input type="text" id="searchGame" placeholder="Cari Game...">
+      </div>
+    </div>
+    <div class="stats-box">
+  <div class="online">👥 <span id="onlineUsers"></span> sedang online</div>
+  <div class="top-games">
+    🔥 Top Game Terfavorit Hari Ini:
+    <ul id="topGames"></ul>
+  </div>
+</div>
+
+    <iframe src="pragmatic-play/index.html" id="gameFrame"></iframe>
+</div>
+</div>
+
+<a href="https://alexis4dno1.com/downloads/app/Alexis4D.apk?signature=iLx4JLU" target="_blank" class="floating-apk">
+  <img src="assets/images/apk.png" alt="Download APK" class="apk-gif">
+</a>
+
+<a href="https://wa.me/628xxxxxxx" target="_blank" class="livechat">💬</a>
+
 <script>
-
-let games = [
-  {name:"Going Bananas Inc.", img:"https://img.viva88athenae.com/sg/images/S-GB02_200x200.jpg"},
-  {name:"Galaxy Guardian", img:"https://img.viva88athenae.com/sg/images/S-GG02_200x200.jpg"},
-  {name:"Christmas Tree of Wonders", img:"https://img.viva88athenae.com/sg/images/S-CT02_200x200.jpg"},
-  {name:"Legacy of Kong Maxways", img:"https://img.viva88athenae.com/sg/images/S-LK03_200x200.jpg"},
-  {name:"Fiery Sevens", img:"https://img.viva88athenae.com/sg/images/S-FS01_200x200.jpg"},
-  {name:"Fiery Sevens Exclusive", img:"https://img.viva88athenae.com/sg/images/S-FS02_200x200.jpg"},
-  {name:"Royale House", img:"https://img.viva88athenae.com/sg/images/S-RH02_200x200.jpg"},
-  {name:"888", img:"https://img.viva88athenae.com/sg/images/S-BA01_200x200.jpg"},
-  {name:"Clash of the Giants", img:"https://img.viva88athenae.com/sg/images/S-CG02_200x200.jpg"},
-  {name:"Royal Katt", img:"https://img.viva88athenae.com/sg/images/S-RK02_200x200.jpg"},
-  {name:"Gold Panther Maxways", img:"https://img.viva88athenae.com/sg/images/S-GP03_200x200.jpg"},
-  {name:"Caishen", img:"https://img.viva88athenae.com/sg/images/S-CS02_200x200.jpg"},
-  {name:"Royale Vegas", img:"https://img.viva88athenae.com/sg/images/S-RV01_200x200.jpg"},
-  {name:"Caishen Deluxe Megaways", img:"https://img.viva88athenae.com/sg/images/S-CS03_200x200.jpg"},
-  {name:"Dragon Wish", img:"https://img.viva88athenae.com/sg/images/S-DW01_200x200.jpg"},
-  {name:"Fruits Mania", img:"https://img.viva88athenae.com/sg/images/S-FM03_200x200.jpg"},
-  {name:"Gold Rush Cowboy", img:"https://img.viva88athenae.com/sg/images/S-GR01_200x200.jpg"},
-  {name:"Wild Wet Win", img:"https://img.viva88athenae.com/sg/images/S-WW02_200x200.jpg"},
-  {name:"Mayan Gems", img:"https://img.viva88athenae.com/sg/images/S-MG02_200x200.jpg"},
-  {name:"Lucky Horse", img:"https://img.viva88athenae.com/sg/images/S-LH04_200x200.jpg"},
-  {name:"Fiery Sevens Hot 100", img:"https://img.viva88athenae.com/sg/images/S-FH04_200x200.jpg"},
-  {name:"Tiger Dance", img:"https://img.viva88athenae.com/sg/images/S-TD01_200x200.jpg"},
-  {name:"Roma", img:"https://img.viva88athenae.com/sg/images/S-RM01_200x200.jpg"},
-  {name:"Alchemy Quest Level Up", img:"https://img.viva88athenae.com/sg/images/S-AL02_200x200.jpg"},
-  {name:"Legacy of Ramakien", img:"https://img.viva88athenae.com/sg/images/S-LR01_200x200.jpg"},
-  {name:"Mister Cashmore", img:"https://img.viva88athenae.com/sg/images/S-MC01_200x200.jpg"},
-  {name:"Fury Max Lucky Road", img:"https://img.viva88athenae.com/sg/images/S-FM04_200x200.jpg"},
-  {name:"Brothers Kingdom", img:"https://img.viva88athenae.com/sg/images/S-GK01_200x200.jpg"},
-  {name:"Lucky Twin Sea", img:"https://img.viva88athenae.com/sg/images/S-LT01_200x200.jpg"},
-  {name:"Pirates Gold Rush", img:"https://img.viva88athenae.com/sg/images/S-PG03_200x200.jpg"},
-  {name:"Happy Neko", img:"https://img.viva88athenae.com/sg/images/S-HN01_200x200.jpg"},
-  {name:"Sweet Bakery", img:"https://img.viva88athenae.com/sg/images/S-SB01_200x200.jpg"},
-  {name:"Fruit Ninja Fury", img:"https://img.viva88athenae.com/sg/images/S-FN01_200x200.jpg"},
-  {name:"Mahjong Riches", img:"https://img.viva88athenae.com/sg/images/S-MR02_200x200.jpg"},
-  {name:"Golden Pixiu", img:"https://img.viva88athenae.com/sg/images/S-GP04_200x200.jpg"},
-  {name:"Alchemy Quest Jackpot", img:"https://img.viva88athenae.com/sg/images/S-AL03_200x200.jpg"},
-  {name:"5 Fortune Dragons", img:"https://img.viva88athenae.com/sg/images/S-FD01_200x200.jpg"},
-  {name:"Golden Lotus SE", img:"https://img.viva88athenae.com/sg/images/S-GL02_200x200.jpg"},
-  {name:"Captain Golds Fortune", img:"https://img.viva88athenae.com/sg/images/S-CG01_200x200.jpg"},
-  {name:"Poker Ways", img:"https://img.viva88athenae.com/sg/images/S-PW03_200x200.jpg"},
-  {name:"Gemstone Rush", img:"https://img.viva88athenae.com/sg/images/S-GR02_200x200.jpg"},
-  {name:"Dancing Fever", img:"https://img.viva88athenae.com/sg/images/S-DF02_200x200.jpg"},
-  {name:"Crazy Bomber", img:"https://img.viva88athenae.com/sg/images/S-CB01_200x200.jpg"},
-  {name:"Sugar Bonanza", img:"https://img.viva88athenae.com/sg/images/S-CB02_200x200.jpg"},
-  {name:"Magic Kitty", img:"https://img.viva88athenae.com/sg/images/S-MK01_200x200.jpg"},
-  {name:"Fiery Sevens Hot 50", img:"https://img.viva88athenae.com/sg/images/S-FH03_200x200.jpg"},
-  {name:"Fiery Sevens Hot 20", img:"https://img.viva88athenae.com/sg/images/S-FH02_200x200.jpg"},
-  {name:"Fiery Sevens Hot 5", img:"https://img.viva88athenae.com/sg/images/S-FH01_200x200.jpg"},
-  {name:"Lucky Snake Wheel", img:"https://img.viva88athenae.com/sg/images/S-LS03_200x200.jpg"},
-  {name:"Santa Wild Drop", img:"https://img.viva88athenae.com/sg/images/S-SW02_200x200.jpg"},
-  {name:"Halloween Vacation", img:"https://img.viva88athenae.com/sg/images/S-HV01_200x200.jpg"},
-  {name:"Candy Candy", img:"https://img.viva88athenae.com/sg/images/S-CP02_200x200.jpg"},
-  {name:"Sugar Party", img:"https://img.viva88athenae.com/sg/images/S-SP04_200x200.jpg"},
-  {name:"Gold West", img:"https://img.viva88athenae.com/sg/images/S-GW03_200x200.jpg"},
-  {name:"Rabbit Riches", img:"https://img.viva88athenae.com/sg/images/S-RR01_200x200.jpg"},
-  {name:"Love Idol", img:"https://img.viva88athenae.com/sg/images/S-LI03_200x200.jpg"},
-  {name:"Secrets of Anubis", img:"https://img.viva88athenae.com/sg/images/S-SA03_200x200.jpg"},
-  {name:"Moji Mania", img:"https://img.viva88athenae.com/sg/images/S-MM03_200x200.jpg"},
-  {name:"Brothers Kingdom 2", img:"https://img.viva88athenae.com/sg/images/S-BK01_200x200.jpg"},
-  {name:"Candy Pop 2", img:"https://img.viva88athenae.com/sg/images/S-CP03_200x200.jpg"},
-  {name:"Farmland Frenzy Maxways", img:"https://img.viva88athenae.com/sg/images/S-FF01_200x200.jpg"},
-  {name:"Triple Panda", img:"https://img.viva88athenae.com/sg/images/S-TP02_200x200.jpg"},
-  {name:"Gold Panther", img:"https://img.viva88athenae.com/sg/images/S-GP01_200x200.jpg"},
-  {name:"Mr Chu Tycoon", img:"https://img.viva88athenae.com/sg/images/S-CH01_200x200.jpg"},
-  {name:"Prosperity Gods", img:"https://img.viva88athenae.com/sg/images/S-PG01_200x200.jpg"},
-  {name:"FaFaFa", img:"https://img.viva88athenae.com/sg/images/S-LY01_200x200.jpg"},
-  {name:"Ho Yeah Monkey", img:"https://img.viva88athenae.com/sg/images/S-HY01_200x200.jpg"},
-  {name:"Golden Monkey", img:"https://img.viva88athenae.com/sg/images/S-FM02_200x200.jpg"},
-  {name:"FaFaFa2", img:"https://img.viva88athenae.com/sg/images/S-LY02_200x200.jpg"},
-  {name:"168 Fortunes", img:"https://img.viva88athenae.com/sg/images/S-FO01_200x200.jpg"},
-  {name:"Princess Wang", img:"https://img.viva88athenae.com/sg/images/S-PW02_200x200.jpg"},
-  {name:"Baby Cai Shen", img:"https://img.viva88athenae.com/sg/images/S-BC01_200x200.jpg"},
-  {name:"Pocket Mon Go", img:"https://img.viva88athenae.com/sg/images/S-PO01_200x200.jpg"},
-  {name:"Jungle King", img:"https://img.viva88athenae.com/sg/images/S-TZ01_200x200.jpg"},
-  {name:"Cai Shen 888", img:"https://img.viva88athenae.com/sg/images/S-CS01_200x200.jpg"},
-  {name:"First Love", img:"https://img.viva88athenae.com/sg/images/S-FL02_200x200.jpg"},
-  {name:"Lucky Koi", img:"https://img.viva88athenae.com/sg/images/S-LK01_200x200.jpg"},
-  {name:"Highway Fortune", img:"https://img.viva88athenae.com/sg/images/S-HF01_200x200.jpg"},
-  {name:"ZEUS", img:"https://img.viva88athenae.com/sg/images/S-ZE01_200x200.jpg"},
-  {name:"Da Fu Xiao Fu", img:"https://img.viva88athenae.com/sg/images/S-DX01_200x200.jpg"},
-  {name:"Golden Chicken", img:"https://img.viva88athenae.com/sg/images/S-GC03_200x200.jpg"},
-  {name:"Candy Pop", img:"https://img.viva88athenae.com/sg/images/S-CP01_200x200.jpg"},
-  {name:"Wow Prosperity", img:"https://img.viva88athenae.com/sg/images/S-WP02_200x200.jpg"},
-  {name:"Tiger Warrior", img:"https://img.viva88athenae.com/sg/images/S-TW01_200x200.jpg"},
-  {name:"King Pharaoh", img:"https://img.viva88athenae.com/sg/images/S-PH02_200x200.jpg"},
-  {name:"Lucky Meow", img:"https://img.viva88athenae.com/sg/images/S-LM01_200x200.jpg"},
-  {name:"Lucky Feng Shui", img:"https://img.viva88athenae.com/sg/images/S-LF01_200x200.jpg"},
-  {name:"Wong Choy", img:"https://img.viva88athenae.com/sg/images/S-WC02_200x200.jpg"},
-  {name:"5 Fortune", img:"https://img.viva88athenae.com/sg/images/S-WM02_200x200.jpg"},
-  {name:"5 Fortune SA", img:"https://img.viva88athenae.com/sg/images/S-WM03_200x200.jpg"},
-  {name:"Emperor Gate", img:"https://img.viva88athenae.com/sg/images/S-EG02_200x200.jpg"},
-  {name:"Big Prosperity", img:"https://img.viva88athenae.com/sg/images/S-FC02_200x200.jpg"},
-  {name:"Big Prosperity SA", img:"https://img.viva88athenae.com/sg/images/S-FC03_200x200.jpg"},
-  {name:"Great Stars", img:"https://img.viva88athenae.com/sg/images/S-GS03_200x200.jpg"},
-  {name:"Great Stars SA", img:"https://img.viva88athenae.com/sg/images/S-GS04_200x200.jpg"},
-  {name:"Golden Whale", img:"https://img.viva88athenae.com/sg/images/S-GW01_200x200.jpg"},
-  {name:"Adventure Iceland", img:"https://img.viva88athenae.com/sg/images/S-IL02_200x200.jpg"},
-  {name:"Iceland SA", img:"https://img.viva88athenae.com/sg/images/S-IL03_200x200.jpg"},
-  {name:"Double Fortune", img:"https://img.viva88athenae.com/sg/images/S-DF01_200x200.jpg"},
-  {name:"Dragon Gold", img:"https://img.viva88athenae.com/sg/images/S-DG03_200x200.jpg"},
-  {name:"Dragon Gold SA", img:"https://img.viva88athenae.com/sg/images/S-DG04_200x200.jpg"},
-  {name:"Magical Lamp", img:"https://img.viva88athenae.com/sg/images/S-ML01_200x200.jpg"},
-  {name:"Heroes", img:"https://img.viva88athenae.com/sg/images/S-HE01_200x200.jpg"},
-  {name:"Three Lucky Stars", img:"https://img.viva88athenae.com/sg/images/S-LS02_200x200.jpg"},
-  {name:"Dragon Empire", img:"https://img.viva88athenae.com/sg/images/S-DE01_200x200.jpg"},
-  {name:"Money Mouse", img:"https://img.viva88athenae.com/sg/images/S-MM01_200x200.jpg"},
-  {name:"Book of Myth", img:"https://img.viva88athenae.com/sg/images/S-BM01_200x200.jpg"},
-  {name:"Double Flame", img:"https://img.viva88athenae.com/sg/images/S-DF03_200x200.jpg"},
-  {name:"Jokers Treasure", img:"https://img.viva88athenae.com/sg/images/S-JT02_200x200.jpg"},
-  {name:"Mega 7", img:"https://img.viva88athenae.com/sg/images/S-MG01_200x200.jpg"},
-  {name:"Rise of Werewolves", img:"https://img.viva88athenae.com/sg/images/S-RW01_200x200.jpg"},
-  {name:"Legendary Beasts Saga", img:"https://img.viva88athenae.com/sg/images/S-LB01_200x200.jpg"},
-  {name:"Hugon Quest", img:"https://img.viva88athenae.com/sg/images/S-HQ01_200x200.jpg"},
-  {name:"Rich Caishen", img:"https://img.viva88athenae.com/sg/images/S-RC01_200x200.jpg"},
-  {name:"Muay Thai Fighter", img:"https://img.viva88athenae.com/sg/images/S-MT01_200x200.jpg"},
-  {name:"Sexy Vegas", img:"ghttps://img.viva88athenae.com/sg/images/S-VB01_200x200.jpg"},
-  {name:"Lucky Koi Exclusive", img:"https://img.viva88athenae.com/sg/images/S-LK02_200x200.jpg"},
-  {name:"Joker's Treasure Exclusive", img:"https://img.viva88athenae.com/sg/images/S-JT03_200x200.jpg"},
-  {name:"Space Conquest", img:"https://img.viva88athenae.com/sg/images/S-SC01_200x200.jpg"},
-  {name:"Journey to the Wild", img:"https://img.viva88athenae.com/sg/images/S-JW01_200x200.jpg"},
-  {name:"Panda Opera", img:"https://img.viva88athenae.com/sg/images/S-PO02_200x200.jpg"},
-  {name:"Christmas Miracles", img:"https://img.viva88athenae.com/sg/images/S-CM02_200x200.jpg"},
-  {name:"Hammer of Thunder", img:"https://img.viva88athenae.com/sg/images/S-HT02_200x200.jpg"}
+// List Provider
+const providers = [
+  { name:"Pragmatic Play", img:"https://img.viva88athenae.com/pp.png", link:"pragmatic-play/index.html" },
+  { name:"PG Soft", img:"https://img.viva88athenae.com/pg.png", link:"PG-SOFT/index.html" },
+  { name:"Jili", img:"https://img.viva88athenae.com/jl.png", link:"Jili/index.html" },
+  { name:"Megawin", img:"https://img.viva88athenae.com/mgw.png", link:"Megawin/index.html" },
+  { name:"Shady Lady", img:"https://img.viva88athenae.com/sdl.png", link:"Shady-Lady/index.html" },
+  { name:"Habanero", img:"https://img.viva88athenae.com/hb.png", link:"Habanero/index.html" },
+  { name:"Spadegaming", img:"https://img.viva88athenae.com/sg.png", link:"Spadegaming/index.html" },
+  { name:"Nolimit City", img:"https://img.viva88athenae.com/nlc.png", link:"Nolimit-City/index.html" },
+  { name:"Fastspin", img:"https://img.viva88athenae.com/fs.png", link:"fast-spin/index.html" },
+  { name:"Joker", img:"https://img.viva88athenae.com/jg.png", link:"joker/index.html" },
+  { name:"Microgaming", img:"https://img.viva88athenae.com/mg.png", link:"Microgaming/index.html" },
+  { name:"5G Games", img:"https://img.viva88athenae.com/fgs.png", link:"5G/index.html" },
+  { name:"Hacksaw Gaming", img:"https://img.viva88athenae.com/hks.png", link:"hacksaw-gaming/index.html" },
+  { name:"Nextspin", img:"https://img.viva88athenae.com/nxt.png", link:"Next-spin/index.html" },
+  { name:"Playstar", img:"https://img.viva88athenae.com/ps.png", link:"playstar/index.html" },
+  { name:"Playtech", img:"https://img.viva88athenae.com/pt.png", link:"playtech/index.html" },
+  { name:"Advant Play", img:"https://img.viva88athenae.com/av.png", link:"advantplay/index.html" },
+  { name:"Cosmoplay", img:"https://img.viva88athenae.com/cmp.png", link:"cosmoplay/index.html" },
+  { name:"CQ9", img:"https://img.viva88athenae.com/cq9.png", link:"cq9/index.html" },
+  { name:"Wow Gaming", img:"https://img.viva88athenae.com/wow.png", link:"wowgaming/index.html" },
+  { name:"Live22", img:"https://img.viva88athenae.com/l22.png", link:"live22/index.html" },
+  { name:"SBO Slot", img:"https://img.viva88athenae.com/ss.png", link:"sboslot/index.html" }
 ];
 
-let finalList = [
-"Mulai dari spin santai dulu sebelum gas lebih dalam",
-"Perhatikan ritme game sebelum menaikkan taruhan",
-"Hentikan sejenak jika hasil terus menurun",
-"Lanjutkan perlahan saat mulai ada kemenangan",
-"Segera pindah game jika pola tidak terbaca",
-"Kontrol modal, jangan terlalu memaksakan",
-"Tingkatkan taruhan secara bertahap saat kondisi bagus",
-"Ambil keuntungan secukupnya jangan terlalu serakah",
-"Berhenti bermain ketika target sudah tercapai",
-"Mainkan dengan sabar dan jangan terburu-buru",
-"Coba turunkan tempo jika hasil mulai tidak stabil",
-"Naikkan sedikit demi sedikit saat pola mulai terasa",
-"Jangan dipaksakan jika game tidak memberikan hasil",
-"Fokus pada konsistensi daripada kemenangan besar",
-"Ambil jeda jika sudah beberapa kali loss berturut",
-"Gunakan feeling tapi tetap kontrol strategi",
-"Jangan langsung all-in, naikkan bet secara bertahap",
-"Ganti permainan jika tidak ada tanda bonus",
-"Pastikan tetap santai dan tidak emosi saat bermain",
-"Manfaatkan momentum saat win mulai sering muncul"
-];
+const container = document.getElementById("providerList");
+const gameFrame = document.getElementById("gameFrame");
 
-// Fungsi Hitung TimeBlock
-function getTimeBlock(){
-  let now=new Date(new Date().toLocaleString("en-US",{timeZone:"Asia/Jakarta"}));
-  let minutes=now.getMinutes();
-  let block=Math.floor(minutes/15);
-  return now.getHours()*4+block;
+// Buat sidebar provider
+providers.forEach(p => {
+  const div = document.createElement("div");
+  div.className = "provider";
+  div.innerHTML = `<img src="${p.img}"><span>${p.name.toUpperCase()}</span>`;
+  div.onclick = () => {
+    document.querySelectorAll(".provider").forEach(el => el.classList.remove("active"));
+    div.classList.add("active");
+    gameFrame.src = p.link;
+    document.getElementById("searchGame").value = "";
+  };
+  container.appendChild(div);
+});
+window.addEventListener("load", () => {
+  const first = document.querySelector(".provider");
+  if(first) first.click();
+});
+
+// Default highlight Pragmatic Play
+document.querySelectorAll(".provider").forEach(el => {
+  if(el.querySelector("span").innerText === "PRAGMATIC PLAY") el.classList.add("active");
+});
+
+// JAM
+function updateTime(){
+  let now = new Date();
+  document.getElementById("time").innerText = now.toLocaleString("id-ID", {timeZone:"Asia/Jakarta"});
 }
+setInterval(updateTime,1000);
+updateTime();
+
+// Search input
+const searchInput = document.getElementById("searchGame");
+searchInput.addEventListener("input", function() {
+  const keyword = this.value.toLowerCase();
+  const activeProviderName = document.querySelector(".provider.active span").innerText.toLowerCase();
+  const activeProvider = providers.find(p => p.name.toLowerCase() === activeProviderName);
+if (gameFrame.contentWindow) {
+  gameFrame.contentWindow.postMessage({ type: "search", keyword }, "*");
+}
+});
+
+// ==========================
+// SYSTEM 15 MENIT
+// ==========================
+const INTERVAL = 15 * 60 * 500;
 
 
-let rtpCache = {}; 
+function generateOnlineUsers(prev){
+  let hour = new Date().getHours();
 
-function getRTP(i){
-  let timeBlock = getTimeBlock();
+  let min, max;
+
+  // 00:00 - 03:00 (masih ramai)
+  if(hour >= 0 && hour < 3){
+    min = 9000;
+    max = 13000;
+  }
+
+  // 03:00 - 10:00 (turun / sepi)
+  else if(hour >= 3 && hour < 10){
+    min = 5000;
+    max = 7000;
+  }
+
+  // 10:00 - 18:00 (mulai naik)
+  else if(hour >= 10 && hour < 18){
+    min = 7000;
+    max = 10000;
+  }
+
+  // 18:00 - 20:00 (menuju ramai)
+  else if(hour >= 18 && hour < 20){
+    min = 9000;
+    max = 12000;
+  }
+
+  // 20:00 - 24:00 (peak)
+  else{
+    min = 11000;
+    max = 15000;
+  }
+
+ 
+  if(!prev){
+    return Math.floor(Math.random() * (max - min + 1)) + min;
+  }
+
+ 
+  let change = Math.floor(Math.random() * 300 - 150);
+
+  let next = prev + change;
 
   
-  let seed = (i * 53 + timeBlock * 29 + (i % 6) * 17) % 100;
+  if(next < min) next = min;
+  if(next > max) next = max;
 
-  if(seed < 15){
-    // 🔴 
-    return 45 + (seed % 13);    
-  } 
-  else if(seed < 30){
-    // 🟡 
-    return 55 + (seed % 20);    
-  } 
-  else{
-    // 🟢 
-    return 65 + (seed % 18);   
+  return next;
+}
+function updateOnlineBase(){
+  let data = JSON.parse(localStorage.getItem("onlineData"));
+  let now = Date.now();
+
+  if(!data || now - data.time > INTERVAL){
+    data = {
+  base: generateOnlineUsers(data?.base || null),
+  time: now
+};
+    localStorage.setItem("onlineData", JSON.stringify(data));
   }
+
+  return data.base;
 }
 
 
-// Pola List
-function generatePola(gameIndex){
-let timeBlock=getTimeBlock();
-let polaList = [
+let baseOnline = updateOnlineBase();
 
-["Langkah 1 | Awal Santai","20X Auto Spin",
- "Langkah 2 | Naikkan Ritme","30X Auto Spin",
- "Langkah 3 | Stabilkan","10X manual",
- "Langkah Terakhir","Aktifkan fitur bonus jika tanda scatter mulai muncul"],
 
-["Langkah 1 | Start Ringan","10X Auto Spin",
- "Langkah 2 | Gas Perlahan","50X Auto Spin",
- "Langkah 3 | Kontrol","20X manual",
- "Langkah Terakhir","Berhenti jika fitur bonus sudah berhasil didapat"],
+function renderOnline(){
+  let dynamic = baseOnline + Math.floor(Math.random() * 30 - 15); 
+  document.getElementById("onlineUsers").innerText =
+    dynamic.toLocaleString("id-ID");
+}
 
-["Langkah 1 | Buka Pola","30X Auto Spin",
- "Langkah 2 | Tekan Mesin","20X Auto Spin",
- "Langkah 3 | Tarik Ritme","10X manual",
- "Langkah Terakhir","Coba masuk ke mode bonus saat permainan mulai terasa bagus"],
 
-["Langkah 1 | Tes Awal","20X Auto Spin",
- "Langkah 2 | Lanjutkan Putaran","50X Auto Spin",
- "Langkah 3 | Stabilkan","10X manual",
- "Langkah Terakhir","Ganti game jika belum ada tanda fitur aktif"],
+setInterval(renderOnline, 5000);
 
-["Langkah 1 | Awal Game","10X Auto Spin",
- "Langkah 2 | Naikkan Tempo","30X Auto Spin",
- "Langkah 3 | Kontrol","20X manual",
- "Langkah Terakhir","Berhenti saat Free Spin berhasil masuk"],
 
-["Langkah 1 | Spin Dasar","20X Auto Spin",
- "Langkah 2 | Mode Cepat","30X Auto Spin",
- "Langkah 3 | Stabilkan","10X manual",
- "Langkah Terakhir","Aktifkan fitur bonus saat peluang terlihat bagus"],
+setInterval(() => {
+  baseOnline = updateOnlineBase();
+}, 60000);
 
-["Langkah 1 | Tes Pola","30X Auto Spin",
- "Langkah 2 | Tekan Cepat","50X Auto Spin",
- "Langkah 3 | Tarik Pola","10X manual",
- "Langkah Terakhir","Berhenti jika sudah masuk ke permainan bonus"],
 
-["Langkah 1 | Start Mesin","10X Auto Spin",
- "Langkah 2 | Lanjutkan","30X Auto Spin",
- "Langkah 3 | Stabilkan","20X manual",
- "Langkah Terakhir","Gunakan fitur bonus saat scatter mulai sering muncul"],
+renderOnline();
 
-["Langkah 1 | Putaran Awal","20X Auto Spin",
- "Langkah 2 | Naikkan Ritme","50X Auto Spin",
- "Langkah 3 | Kontrol","10X manual",
- "Langkah Terakhir","Berhenti jika sudah mendapatkan hadiah tambahan"],
+// ==========================
+// TOP GAME
+// ==========================
+const gameList = [
+  { name:"Gates of Olympus", provider:"Pragmatic Play" },
+  { name:"Gates of Olympus 1000", provider:"Pragmatic Play" },
+  { name:"Gates of Olympus Super Scatter", provider:"Pragmatic Play" },
+  { name:"Sweet Bonanza", provider:"Pragmatic Play" },
+  { name:"Sweet Bonanza 1000", provider:"Pragmatic Play" },
+  { name:"Sweet Bonanza Super Scatter", provider:"Pragmatic Play" },
+  { name:"Starlight Princess", provider:"Pragmatic Play" },
+  { name:"Starlight Princess 1000", provider:"Pragmatic Play" },
+  { name:"Starlight Princess Super Scatter", provider:"Pragmatic Play" },
+  { name:"Sugar Rush", provider:"Pragmatic Play" },
+  { name:"Sugar Rush 1000", provider:"Pragmatic Play" },
+  { name:"Gatot Kaca", provider:"Pragmatic Play" },
+  { name:"Gatot Kaca 1000", provider:"Pragmatic Play" },
+  { name:"Gatot Kaca Super Scatter", provider:"Pragmatic Play" },
+  { name:"Mahjong Wins 3", provider:"Pragmatic Play" },
+  { name:"Bonanza Gold", provider:"Pragmatic Play" },
+  { name:"Mahjong Ways", provider:"PG Soft" },
+  { name:"Mahjong Ways 2", provider:"PG Soft" },
+  { name:"Lucky Neko", provider:"PG Soft" },
+  { name:"Wild Bandito", provider:"PG Soft" },
+  { name:"Wild Bounty", provider:"PG Soft" },
+  { name:"Wild Ape", provider:"PG Soft" },
+  { name:"Fortune Tiger", provider:"PG Soft" },
+  { name:"Dragon Hatch", provider:"PG Soft" },
+  { name:"Hot Hot Fruit", provider:"Habanero" },
+  { name:"Fa Cai Shen", provider:"Habanero" },
+  { name:"Super Ace", provider:"Jili" },
+  { name:"Crazy 777", provider:"Jili" },
+  { name:"Roma Legacy", provider:"Spadegaming" },
+  { name:"Fire Chibi", provider:"CQ9" },
+  { name:"Wanted Dead or a Wild", provider:"Hacksaw Gaming" }
 
-["Langkah 1 | Awal Santai","10X Auto Spin",
- "Langkah 2 | Gas Cepat","30X Auto Spin",
- "Langkah 3 | Stabilkan","20X manual",
- "Langkah Terakhir","Masuk ke fitur bonus saat ritme permainan stabil"],
-
-["Langkah 1 | Tes Mesin","30X Auto Spin",
- "Langkah 2 | Mode Lanjut","20X Auto Spin",
- "Langkah 3 | Manual","10X",
- "Langkah Terakhir","Berhenti jika fitur Free Spin sudah aktif"],
-
-["Langkah 1 | Spin Santai","20X Auto Spin",
- "Langkah 2 | Mode Cepat","50X Auto Spin",
- "Langkah 3 | Stabilkan","10X manual",
- "Langkah Terakhir","Coba fitur bonus saat peluang mulai meningkat"],
-
-["Langkah 1 | Buka Game","10X Auto Spin",
- "Langkah 2 | Tekan Mesin","30X Auto Spin",
- "Langkah 3 | Kontrol","20X manual",
- "Langkah Terakhir","Ganti permainan jika tidak ada perkembangan"],
-
-["Langkah 1 | Tes RTP","20X Auto Spin",
- "Langkah 2 | Lanjutkan","50X Auto Spin",
- "Langkah 3 | Stabilkan","10X manual",
- "Langkah Terakhir","Aktifkan fitur bonus saat peluang Free Spin terasa dekat"],
-
-["Langkah 1 | Awal Putaran","30X Auto Spin",
- "Langkah 2 | Naikkan Tempo","20X Auto Spin",
- "Langkah 3 | Manual","10X",
- "Langkah Terakhir","Berhenti saat bonus berhasil didapat"],
-
-["Langkah 1 | Start Ringan","10X Auto Spin",
- "Langkah 2 | Mode Cepat","30X Auto Spin",
- "Langkah 3 | Stabilkan","20X manual",
- "Langkah Terakhir","Masuk ke fitur bonus saat kondisi permainan bagus"],
-
-["Langkah 1 | Tes Game","20X Auto Spin",
- "Langkah 2 | Tekan Cepat","50X Auto Spin",
- "Langkah 3 | Tarik Pola","10X manual",
- "Langkah Terakhir","Berhenti jika sudah mencapai target keuntungan"],
-
-["Langkah 1 | Spin Awal","30X Auto Spin",
- "Langkah 2 | Mode Panas","20X Auto Spin",
- "Langkah 3 | Stabilkan","10X manual",
- "Langkah Terakhir","Coba fitur bonus saat momentum sedang bagus"],
-
-["Langkah 1 | Awal Santai","10X Auto Spin",
- "Langkah 2 | Gas Cepat","50X Auto Spin",
- "Langkah 3 | Kontrol","20X manual",
- "Langkah Terakhir","Berhenti jika sudah mendapatkan kemenangan tambahan"],
-
-["Langkah 1 | Tes Mesin","20X Auto Spin",
- "Langkah 2 | Naikkan Ritme","30X Auto Spin",
- "Langkah 3 | Stabilkan","10X manual",
- "Langkah Terakhir","Aktifkan fitur bonus saat tanda kemenangan mulai terlihat"]
 
 ];
-let index=(gameIndex+timeBlock)%polaList.length;
-let p=polaList[index];
-return [[p[0],p[1]],[p[2],p[3]],[p[4],p[5]],[p[6],p[7]]];
-}
 
-// Final Step
-function getFinalStep(gameIndex){
-  let timeBlock = getTimeBlock();
-  let seed = (gameIndex * 11 + timeBlock * 7) % finalList.length;
-  return finalList[seed];
-}
+function getRandomGames(){
+  let lastData = JSON.parse(localStorage.getItem("topGames"));
 
-// Render Game Grid
-function render(list=games){
-let html="";
-list.forEach((g,i)=>{
-  let r=getRTP(i);
-  let level=r>=75?"high":r>=60?"mid":"low";
-  html+=`<div class="card" onclick="openPopup(${i})">
-  <img src="${g.img}">
-  <div class="rtp"><div class="rtp-fill ${level}" style="width:${r}%"></div><div class="rtp-text">${r}%</div></div>
-  <div class="overlay-btn" onclick="openPopup(${i}); event.stopPropagation();">Lihat Pola & Trik</div></div>`;
-});
-document.getElementById("grid").innerHTML=html;
-}
+  let availableGames = [...gameList];
 
-let betCache = {}; // cache per game per blok
-
-function getBet(i){
-  let timeBlock = getTimeBlock();
-  let key = `${i}_${timeBlock}`;
-
-  // kalau sudah ada cache, pakai itu
-  if(betCache[key] !== undefined) return betCache[key];
-
-  // Pilihan minimal kelipatan 200
-  let minOptions = [200, 400, 600, 800];
-  let min = minOptions[Math.floor(Math.random() * minOptions.length)];
-
-  // Pilihan maksimal (lebih besar dari min, tetap kelipatan 200)
-  let maxOptions = [];
-  for(let m = min + 200; m <= 1200; m += 200){
-    maxOptions.push(m);
+  
+  if(lastData && lastData.list){
+    availableGames = availableGames.filter(g => !lastData.list.includes(g));
   }
-  let max = maxOptions[Math.floor(Math.random() * maxOptions.length)];
 
-  let betText = min + " - " + max;
-  betCache[key] = betText;
-  return betText;
+  
+  if(availableGames.length < 3){
+    availableGames = [...gameList];
+  }
+
+ 
+  let shuffled = availableGames.sort(() => 0.5 - Math.random());
+  return shuffled.slice(0,3);
 }
 
-// Popup
-let timerJam;
-function updateJam(){
-  let now=new Date();
-  let jam=now.toLocaleTimeString("id-ID",{timeZone:"Asia/Jakarta",hour:"2-digit",minute:"2-digit",second:"2-digit"});
-  let el=document.getElementById("jam-live");
-  if(el) el.innerText="Update: "+jam+" WIB";
+function updateTopGames(){
+  let data = JSON.parse(localStorage.getItem("topGames"));
+
+  let now = Date.now();
+
+  if(!data || now - data.time > INTERVAL){
+    data = {
+      list: getRandomGames(),
+      time: now
+    };
+    localStorage.setItem("topGames", JSON.stringify(data));
+  }
+
+  const ul = document.getElementById("topGames");
+  ul.innerHTML = "";
+
+  data.list.forEach(game => {
+  let li = document.createElement("li");
+
+  li.innerHTML = `
+    <div class="game-row">
+      <span class="game-name">👑 ${game.name}</span>
+      <span class="game-provider">[${game.provider}]</span>
+    </div>
+  `;
+
+  ul.appendChild(li);
+});
 }
 
-function openPopup(i){
-clearInterval(timerJam);
-timerJam=setInterval(updateJam,1000);
-updateJam();
+updateTopGames();
+setInterval(updateTopGames, 60000);
 
-let r=getRTP(i);
-if(r<60){
-document.querySelector(".popup-body").innerHTML=`<div class="warning-red">⚠️ GAME SEDANG TIDAK DISARANKAN<br><br>RTP saat ini rendah (${r}%)<br>Disarankan untuk mencari game lain terlebih dahulu</div><div class="green">Coba kembali beberapa saat lagi atau pilih game dengan RTP lebih tinggi</div>`;
-document.getElementById("popup").style.display="flex";
-return;
+// ==========================
+// SCROLL TOP BUTTON
+// ==========================
+const scrollBtn = document.getElementById("scrollTopBtn");
+
+window.addEventListener("scroll", () => {
+  if (window.scrollY > 200) {
+    scrollBtn.style.opacity = "1";
+    scrollBtn.style.pointerEvents = "auto";
+  } else {
+    scrollBtn.style.opacity = "0";
+    scrollBtn.style.pointerEvents = "none";
+  }
+});
+
+scrollBtn.addEventListener("click", () => {
+  window.scrollTo({
+    top: 0,
+    behavior: "smooth"
+  });
+});
+
+// ==========================
+// AUTO SCROLL PROVIDER (MOBILE)
+// ==========================
+const providerList = document.getElementById("providerList");
+
+let autoScroll;
+
+// DUPLIKAT BIAR LOOP HALUS
+function duplicateProvider(){
+  providers.forEach(p => {
+    const div = document.createElement("div");
+    div.className = "provider";
+
+    div.innerHTML = `<img src="${p.img}"><span>${p.name.toUpperCase()}</span>`;
+
+    div.onclick = () => {
+      document.querySelectorAll(".provider").forEach(el => el.classList.remove("active"));
+      div.classList.add("active");
+      gameFrame.src = p.link;
+      document.getElementById("searchGame").value = "";
+    };
+
+    providerList.appendChild(div);
+  });
 }
 
-let betText = getBet(i);
+// START AUTO SCROLL
+function startAutoScroll(){
+  stopAutoScroll(); // reset dulu
 
-let pola=generatePola(i);
-let finalStep=getFinalStep(i);
+  autoScroll = setInterval(() => {
+    providerList.scrollLeft += 1;
 
-let html=`<div id="jam-live" style="font-size:10px;color:#aaa;margin-bottom:8px;text-align:center;">Update: --</div>
-<div class="info-box"><div class="info-row"><div class="info-label">Provider</div><div class="info-value">SPADEGAMING</div></div><div class="info-row"><div class="info-label">Stake Bet</div><div class="info-value">${betText}</div></div></div>
-<div class="pola-title">POLA REKOMENDASI</div>`;
-
-pola.forEach(p=>{html+=`<div class="step"><b>${p[0]}</b>${p[1]}</div>`;});
-html+=`<div class="final-red">Langkah Terakhir | ${finalStep}</div>
-<div style="font-size:11px;color:#ccc;margin-top:6px;">Jika tidak mendapatkan FREESPIN MURNI<br>10X Spin turbo (manual)</div>
-<div class="green">Selamat bermain, semoga memperoleh kemenangan maksimal</div>
-<div class="warning">Utamakan penggunaan pola dan strategi masing-masing. Pastikan untuk mengaktifkan fitur ganda (jika tersedia) guna meningkatkan peluang munculnya SCATTER</div>`;
-
-document.querySelector(".popup-body").innerHTML=html;
-document.getElementById("popup").style.display="flex";
+    if(providerList.scrollLeft >= providerList.scrollWidth / 2){
+      providerList.scrollLeft = 0;
+    }
+  }, 16); // lebih smooth
 }
 
-function closePopup(){document.getElementById("popup").style.display="none";clearInterval(timerJam);}
-render();
-
-
-function autoUpdate(){
-  let lastBlock=getTimeBlock();
-  setInterval(()=>{
-    let currentBlock=getTimeBlock();
-    if(currentBlock!==lastBlock){render();lastBlock=currentBlock;}
-  },10000);
+// STOP
+function stopAutoScroll(){
+  if(autoScroll) clearInterval(autoScroll);
 }
-autoUpdate();
 
+// INIT MOBILE
+function initMobileScroll(){
+  if(window.matchMedia("(max-width: 768px)").matches){
 
-window.addEventListener("message",function(e){
-if(e.data.type==="search"){
-  const keyword=e.data.keyword.toLowerCase();
-  const filtered=games.filter(g=>g.name.toLowerCase().includes(keyword));
-  render(filtered);
+    duplicateProvider();
+
+    setTimeout(() => {
+      startAutoScroll();
+    }, 500);
+
+    // PAUSE SAAT INTERAKSI
+    providerList.addEventListener("touchstart", stopAutoScroll);
+    providerList.addEventListener("touchend", startAutoScroll);
+
+    providerList.addEventListener("mousedown", stopAutoScroll);
+    providerList.addEventListener("mouseup", startAutoScroll);
+  } else {
+    stopAutoScroll();
+  }
 }
+
+// JALANKAN SAAT LOAD
+window.addEventListener("load", initMobileScroll);
+
+// JALANKAN LAGI SAAT RESIZE (HP rotate)
+window.addEventListener("resize", initMobileScroll);
+
+let isDown = false;
+let startX;
+let scrollLeft;
+
+providerList.addEventListener("mousedown", (e) => {
+  isDown = true;
+  startX = e.pageX - providerList.offsetLeft;
+  scrollLeft = providerList.scrollLeft;
+});
+
+providerList.addEventListener("mouseleave", () => isDown = false);
+providerList.addEventListener("mouseup", () => isDown = false);
+
+providerList.addEventListener("mousemove", (e) => {
+  if(!isDown) return;
+  e.preventDefault();
+  const x = e.pageX - providerList.offsetLeft;
+  const walk = (x - startX) * 2; // speed drag
+  providerList.scrollLeft = scrollLeft - walk;
 });
 </script>
 
